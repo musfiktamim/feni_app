@@ -93,24 +93,25 @@ function Home({ navigation }) {
     ]
     return (
         <View>
-            <Text style={styles.sectionTitle}>Services</Text>
-            <View style={[styles.pageTop, showTopPage ? { paddingBottom: 45 } : { height: 250 }]}>
-                {
-                    serv.map((item, index) => <TouchableOpacity onPress={() => navigation.navigate(item.title)} key={index}>
-                        <View style={styles.servicesBox}>
-                            <Image style={{ height: "50%", width: "50%" }} source={item.ico} />
-                            <Text>{item.title}</Text>
-                        </View>
-                    </TouchableOpacity>
-                    )
-                }
-                {/* <View style={styles.shadowing}></View> */}
-                {
-                    showTopPage ? null :
-                        <LinearGradient style={styles.shadowing} colors={["rgba(255,255,255, 0)", "rgba(8, 5, 1, 0.35)"]}>
+            <View style={{ width: "100%", height: "auto", display: "flex", position: "relative", alignItems: "center", borderBottomWidth: 5, borderBottomColor: "#DE1976" }}>
+                <View style={[styles.pageTop, showTopPage ? { paddingBottom: 5 } : { height: 250 }]}>
+                    {
+                        serv.map((item, index) => <TouchableOpacity onPress={() => navigation.navigate(item.title)} key={index}>
+                            <View style={styles.servicesBox}>
+                                <Image style={{ height: "50%", width: "50%" }} source={item.ico} />
+                                <Text>{item.title}</Text>
+                            </View>
+                        </TouchableOpacity>
+                        )
+                    }
+                    {/* <View style={styles.shadowing}></View> */}
+                    {
+                        showTopPage ? null :
+                            <LinearGradient style={styles.shadowing} colors={["rgba(255,255,255, 0)", "rgba(8, 5, 1, 0.35)"]}>
 
-                        </LinearGradient>
-                }
+                            </LinearGradient>
+                    }
+                </View>
                 <Button onPress={() => setShowTopPage(!showTopPage)} mode='contained' icon={showTopPage ? "arrow-up" : "arrow-down"} style={styles.bottomButton}>See More</Button>
             </View>
         </View >
@@ -150,7 +151,7 @@ const styles = StyleSheet.create({
     },
     bottomButton: {
         position: "absolute",
-        bottom: 0,
+        bottom: -20,
         backgroundColor: "#DE1976",
         color: "white",
     },
