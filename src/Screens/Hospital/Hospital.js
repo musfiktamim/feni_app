@@ -1,12 +1,13 @@
 import React from 'react'
 import { View } from 'react-native'
 import { Text } from 'react-native-paper'
+import PageWrapper from '../../components/PageWrapper'
 
-function Hospital() {
+function Hospital(props) {
     return (
-        <View>
+        <PageWrapper isYouWantToNavigationBar={[true, props.route.name]}>
             <Text>Hospital</Text>
-        </View>
+        </PageWrapper>
     )
 }
 

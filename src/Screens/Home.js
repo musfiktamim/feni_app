@@ -2,10 +2,13 @@ import { LinearGradient } from 'expo-linear-gradient'
 import React, { useState } from 'react'
 import { Text, View, StyleSheet, TouchableOpacity, Image } from 'react-native'
 import { Button } from 'react-native-paper'
-import hello from "../../assets/images/doctor.png"
+import PageWraper from '../components/PageWrapper'
+import { useNavigation } from '@react-navigation/native'
 
-function Home({ navigation }) {
+function Home(props) {
     const [showTopPage, setShowTopPage] = useState(false)
+    const navigation = useNavigation()
+
     const serv = [
         {
             title: "Doctor",
@@ -92,11 +95,12 @@ function Home({ navigation }) {
 
     ]
     return (
-        <View>
+        <PageWraper isYouWantToNavigationBar={[true, props.route.name]} >
+
             <View style={{ width: "100%", height: "auto", display: "flex", position: "relative", alignItems: "center", borderBottomWidth: 5, borderBottomColor: "#DE1976" }}>
                 <View style={[styles.pageTop, showTopPage ? { paddingBottom: 5 } : { height: 250 }]}>
                     {
-                        serv.map((item, index) => <TouchableOpacity onPress={() => navigation.navigate(item.title)} key={index}>
+                        serv.map((item, index) => <TouchableOpacity onPress={() => navigation.navigate(item.title)} style={{ width: "24%" }} key={index}>
                             <View style={styles.servicesBox}>
                                 <Image style={{ height: "50%", width: "50%" }} source={item.ico} />
                                 <Text>{item.title}</Text>
@@ -114,7 +118,7 @@ function Home({ navigation }) {
                 </View>
                 <Button onPress={() => setShowTopPage(!showTopPage)} mode='contained' icon={showTopPage ? "arrow-up" : "arrow-down"} style={styles.bottomButton}>See More</Button>
             </View>
-        </View >
+        </PageWraper>
     )
 }
 
@@ -125,7 +129,6 @@ const styles = StyleSheet.create({
         display: "flex",
         flexWrap: "wrap",
         flexDirection: "row",
-        gap: 2,
 
         // borderColor: "black",
         // borderWidth: 1,
@@ -138,15 +141,15 @@ const styles = StyleSheet.create({
         color: "#DE1976"
     },
     servicesBox: {
-        width: 110,
+        width: "100%",
         height: 100,
-        elevation: 1,
+        borderWidth: 0.5,
         display: "flex",
         rowGap: 2,
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        borderColor: "black",
+        borderColor: "gray",
         backgroundColor: "white"
     },
     bottomButton: {

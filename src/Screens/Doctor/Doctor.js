@@ -3,8 +3,10 @@ import { Image, PixelRatio, StyleSheet } from 'react-native'
 import { ScrollView, View } from 'react-native'
 import { Button, Chip, IconButton, Modal, Portal, Text, ToggleButton } from 'react-native-paper'
 import DoctorBox from '../../Elements/DoctorBox'
+import PageWrapper from '../../components/PageWrapper'
+import { useNavigation } from '@react-navigation/native'
 
-function Doctor({ navigation }) {
+function Doctor(props) {
     const [openModel, setOpenModel] = useState(false)
     const [hellos, setHelos] = useState([
         { title: "All", selected: false },
@@ -16,14 +18,14 @@ function Doctor({ navigation }) {
     ])
     const [modelFilter, setModelFilter] = useState([])
 
-
+    const navigation = useNavigation()
 
     function handlChipModel(name) {
         // console.log(name)
         const is = modelFilter.findIndex((item) => item == name)
     }
     return (
-        <View style={{ flex: 1, position: "relative" }}>
+        <PageWrapper isYouWantToNavigationBar={[true, props.route.name]} isYouWantToFloatButton={[true, "Create Doctor", "plus"]} >
             <View style={styles.topBar}>
                 <IconButton onPress={() => { setOpenModel(true) }} icon={"filter"}></IconButton>
                 <Portal>
@@ -41,9 +43,7 @@ function Doctor({ navigation }) {
                     hellos.map((item, index) => <DoctorBox key={index} item={item} />)
                 }
             </ScrollView>
-            <IconButton icon={"plus"} onPress={() => navigation.navigate("Create Doctor")} style={{ backgroundColor: "white", elevation: 100, borderColor: "black", borderWidth: 1, position: "absolute", bottom: 10, right: 10 }} size={35} ></IconButton>
-
-        </View>
+        </PageWrapper>
     )
 }
 

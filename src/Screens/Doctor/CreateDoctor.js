@@ -3,7 +3,8 @@ import { Image, ScrollView, Text, View } from 'react-native'
 import { Button, IconButton, Modal, Portal, TextInput } from 'react-native-paper'
 import * as ImagePicker from "expo-image-picker"
 import { Picker } from '@react-native-picker/picker';
-function CreateDoctor() {
+import PageWrapper from '../../components/PageWrapper';
+function CreateDoctor(props) {
     const [image, setImage] = useState(null);
     const [openChemberMode, setOpenChemberMode] = useState(false)
     const [selectedLanguage, setSelectedLanguage] = useState();
@@ -72,6 +73,13 @@ function CreateDoctor() {
     const [treatment, setTreatment] = useState("")
     const [description, setDescription] = useState("")
 
+    function handleCencel() {
+
+    }
+
+    function handleSave() {
+
+    }
 
     const pickImage = async () => {
         // No permissions request is necessary for launching the image library
@@ -86,59 +94,62 @@ function CreateDoctor() {
         console.log(result);
 
         if (!result.canceled) {
-            setImage(result.assets[0].uri);
+            setImage(result.assets[0]);
         }
     };
 
     return (
-        <ScrollView>
-            <View style={{ marginTop: 20, paddingHorizontal: 10 }}>
-                <View style={{ margin: "auto", position: "relative", marginBottom: 10 }}>
-                    <View style={{ width: 200, height: 200, borderWidth: 1, overflow: 'hidden', borderColor: "black", borderRadius: "100%" }}>
-                        {
-                            image && <Image source={{ uri: image }} style={{ width: "100%", height: "100%" }} />
-                        }
-                    </View>
-                    <IconButton style={{ position: "absolute", bottom: 0, right: 0, backgroundColor: "pink" }} iconColor='white' size={40} icon={"camera"} onPress={pickImage}></IconButton>
-                </View>
-                <TextInput value={name} onChangeText={text => setName(text)} key={'name'} mode='outlined' label={"ডাক্টারের নাম"} cursorColor='black' />
-                <Picker
-                    selectedValue={selectedLanguage}
-                    mode='dropdown'
-                    onValueChange={(itemValue, itemIndex) =>
-                        setSelectedLanguage(itemValue)
-                    }
-                    style={{ marginTop: 10 }}
-
-                >
+        <PageWrapper >
+            <View style={{ margin: "auto", position: "relative", marginBottom: 10 }}>
+                <View style={{ width: 200, height: 200, borderWidth: 1, overflow: 'hidden', borderColor: "black", borderRadius: "100%" }}>
                     {
-                        doctorTypes.map((item, index) => <Picker.Item key={index} label={`${item.main}`} value={`${item.main}`} />)
-
-
+                        image && <Image source={{ uri: image.uri }} style={{ width: "100%", height: "100%" }} />
                     }
-                </Picker>
-                <TextInput value={education} onChangeText={text => setEducation(text)} label={'শিক্ষা'} mode='outlined' cursorColor='black' multiline={true} numberOfLines={6} />
-                <TextInput value={presentworkplace} onChangeText={text => setPresentworkplace(text)} label={'ভর্তমান কর্মসংস্থান'} mode='outlined' cursorColor='black' />
-                <TextInput value={treatment} onChangeText={text => setTreatment(text)} mode='outlined' label={'যে যে রোগের চিকিৎসা করেন'} multiline={true} numberOfLines={6} ></TextInput>
-                <Button onPress={() => setOpenChemberMode(true)} mode='outlined' style={{ borderRadius: 10, marginTop: 4 }}>চেম্বার</Button>
-                <TextInput value={description} onChangeText={text => setDescription(text)} label={'ডিস্ক্রিপশন'} mode='outlined' cursorColor='black' multiline={true} numberOfLines={6} />
-                <Portal>
-                    <Modal visible={openChemberMode} onDismiss={() => setOpenChemberMode(false)} contentContainerStyle={{ backgroundColor: 'white', borderRadius: 15 }} style={{ padding: 20, }} >
-                        <View style={{ paddingHorizontal: 10, paddingVertical: 10 }}>
-                            <TextInput mode='outlined' label={'চেম্বারের নাম'}></TextInput>
-                            <TextInput mode='outlined' label={'কি কি বারে'}></TextInput>
-                            <TextInput mode='outlined' label={'কয়টা থেকে কয়টা'}></TextInput>
-                            <TextInput mode='outlined' label={'ফোন নাম্বার'}></TextInput>
-                            <View style={{ display: "flex", marginTop: 10, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-                                <Button mode='outlined' onPress={() => setOpenChemberMode(false)} style={{ width: "49%", borderRadius: 10 }}>সেভ করুণ</Button>
-                                <Button mode='contained' style={{ width: "49%", borderRadius: 10 }}>বাতিল করুণ</Button>
-                            </View>
-                        </View>
-                    </Modal>
-                </Portal>
-
+                </View>
+                <IconButton style={{ position: "absolute", bottom: 0, right: 0, backgroundColor: "pink" }} iconColor='white' size={40} icon={"camera"} onPress={pickImage}></IconButton>
             </View>
-        </ScrollView>
+            <TextInput value={name} onChangeText={text => setName(text)} key={'name'} mode='outlined' label={"ডাক্টারের নাম"} cursorColor='black' />
+            <Picker
+                placeholder='Type of Doctor'
+                selectedValue={selectedLanguage}
+                mode='dropdown'
+                onValueChange={(itemValue, itemIndex) =>
+                    setSelectedLanguage(itemValue)
+                }
+                style={{ marginTop: 10 }}
+
+            >
+                {
+                    doctorTypes.map((item, index) => <Picker.Item key={index} label={`${item.main}`} value={`${item.main}`} />)
+
+
+                }
+            </Picker>
+            <TextInput value={education} onChangeText={text => setEducation(text)} label={'শিক্ষা'} mode='outlined' cursorColor='black' multiline={true} numberOfLines={6} />
+            <TextInput value={presentworkplace} onChangeText={text => setPresentworkplace(text)} label={'ভর্তমান কর্মসংস্থান'} mode='outlined' cursorColor='black' />
+            <TextInput value={treatment} onChangeText={text => setTreatment(text)} mode='outlined' label={'যে যে রোগের চিকিৎসা করেন'} multiline={true} numberOfLines={6} ></TextInput>
+            <Button onPress={() => setOpenChemberMode(true)} mode='outlined' style={{ borderRadius: 10, marginTop: 4 }}>চেম্বার</Button>
+            <TextInput value={description} onChangeText={text => setDescription(text)} label={'ডিস্ক্রিপশন'} mode='outlined' cursorColor='black' multiline={true} numberOfLines={6} />
+            <Portal>
+                <Modal visible={openChemberMode} onDismiss={() => setOpenChemberMode(false)} contentContainerStyle={{ backgroundColor: 'white', borderRadius: 15 }} style={{ padding: 20, }} >
+                    <View style={{ paddingHorizontal: 10, paddingVertical: 10 }}>
+                        <TextInput mode='outlined' label={'চেম্বারের নাম'}></TextInput>
+                        <TextInput mode='outlined' label={'কি কি বারে'}></TextInput>
+                        <TextInput mode='outlined' label={'কয়টা থেকে কয়টা'}></TextInput>
+                        <TextInput mode='outlined' label={'ফোন নাম্বার'}></TextInput>
+                        <View style={{ display: "flex", marginTop: 10, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                            <Button mode='outlined' onPress={() => setOpenChemberMode(false)} style={{ width: "49%", borderRadius: 10 }}>সেভ করুণ</Button>
+                            <Button mode='contained' style={{ width: "49%", borderRadius: 10 }}>বাতিল করুণ</Button>
+                        </View>
+                    </View>
+                </Modal>
+            </Portal>
+
+            <View style={{ width: "100%", marginTop: 10, display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+                <Button onPress={handleCencel} mode='outlined' style={{ width: "49%", borderRadius: 10 }} >বাতিল করুন </Button>
+                <Button onPress={handleSave} mode='contained' style={{ width: "49%", borderRadius: 10 }} >পোষ্ট করুন</Button>
+            </View>
+        </PageWrapper>
     )
 }
 

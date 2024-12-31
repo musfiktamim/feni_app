@@ -1,13 +1,16 @@
 import React from 'react'
 import { Button, Text, View } from 'react-native'
+import PageWrapper from '../components/PageWrapper'
+import { useNavigation } from '@react-navigation/native'
 
-function About({ navigation }) {
+function About(props) {
+    const navigation = useNavigation()
     return (
-        <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <PageWrapper isYouWantToNavigationBar={[true, props.route.name]}>
             <Text>About</Text>
             <Button onPress={() => navigation.popTo("Home")} title='Home'></Button>
 
-        </View>
+        </PageWrapper>
     )
 }
 
