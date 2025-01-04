@@ -81,7 +81,7 @@ function Home(props) {
             ico: require("../../assets/images/man.png")
         },
         {
-            title: "Worker",
+            title: "Hot-Line",
             ico: require("../../assets/images/call-center-service.png")
         },
         {
@@ -90,6 +90,10 @@ function Home(props) {
         },
         {
             title: "Entrepreneur",
+            ico: require("../../assets/images/success.png")
+        },
+        {
+            title: "News",
             ico: require("../../assets/images/success.png")
         },
 

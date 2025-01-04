@@ -1,13 +1,15 @@
 import React from 'react'
 import { Alert, Image, Linking, Pressable, StyleSheet, Text, View } from 'react-native'
 import image1 from '../../assets/images/bijoysinghIMages.jpg'
+import { useNavigation } from '@react-navigation/native'
 
 function ToletBox() {
+    const navigation = useNavigation()
     function handleLongPress() {
         Alert.alert("নিশ্চিত?", "আপনি কি নিশ্চিত? আপনি তাকে কল করতে চান।", [{ text: "হ্যা", onPress: () => { Linking.openURL("tel:01855241666") } }, { text: "না", onPress: () => { } }, { text: "সরান", onPress: () => { } }])
     }
     return (
-        <Pressable onLongPress={handleLongPress} style={styles.Container} >
+        <Pressable onPress={() => navigation.navigate("To Let Detailes")} onLongPress={handleLongPress} style={styles.Container} >
             <View style={styles.imageContainer}>
                 <Image source={image1} style={{ width: "100%", height: "100%" }} />
             </View>

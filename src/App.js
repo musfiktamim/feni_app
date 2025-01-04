@@ -16,6 +16,16 @@ import CreateRentCar from './Screens/Rent_Car/CreateRentCar';
 import ToLetHome from './Screens/ToLet/ToLetHome';
 import CreateToLet from './Screens/ToLet/CreateToLet';
 import DetailesToLet from './Screens/ToLet/DetailesToLet';
+import JobHomePage from './Screens/Job/JobHomePage';
+import CreateJob from './Screens/Job/CreateJob';
+import WorkerHome from './Screens/Worker/WorkerHome';
+import WorkerDetailes from './Screens/Worker/WorkerDetailes';
+import CreateWorker from './Screens/Worker/CreateWorker';
+import MyAllDocuMents from './Screens/MyAllDocuMents';
+import NewsHome from './Screens/News/NewsHome';
+import NewsDetailes from './Screens/News/NewsDetailes';
+import CreateNews from './Screens/News/CreateNews';
+import UserHome from './Screens/UserHome';
 
 const Stack = createNativeStackNavigator()
 
@@ -26,7 +36,9 @@ export default function App() {
       <NavigationContainer >
         <Stack.Navigator screenOptions={{ animation: "fade" }} initialRouteName='Home' >
           <Stack.Screen name='Home' options={{ title: "ফেনী জেলা" }} component={Home} />
-          <Stack.Screen name='About' component={About} />
+          <Stack.Screen name='Notification' component={About} />
+          <Stack.Screen name='Activity' component={MyAllDocuMents} />
+          <Stack.Screen name='User' component={UserHome} />
 
           <Stack.Screen name='Doctor' component={Doctor} options={{ title: "ডক্টর" }} />
           <Stack.Screen name='Create Doctor' component={CreateDoctor} options={{ title: "ডক্টর পোষ্ট তৈরী করুন" }} />
@@ -46,6 +58,17 @@ export default function App() {
           <Stack.Screen name='To Let' component={ToLetHome} options={{ title: "বাসা ভাড়া" }} />
           <Stack.Screen name='Create To Let' component={CreateToLet} options={{ title: "তৈরি করুন" }} />
           <Stack.Screen name='To Let Detailes' component={DetailesToLet} options={{ title: "বাড়ির বিস্তারিত" }} />
+
+          <Stack.Screen name='Job' component={JobHomePage} options={{ title: "বাড়ির বিস্তারিত" }} />
+          <Stack.Screen name='Create Job' component={CreateJob} options={{ title: "বাড়ির বিস্তারিত" }} />
+
+          <Stack.Screen name='Worker' component={WorkerHome} options={{ title: "শ্রমিক" }} />
+          <Stack.Screen name='Worker Detailes' component={WorkerDetailes} options={{ title: "শ্রমিক বিস্তারিত" }} />
+          <Stack.Screen name='Create Worker' component={CreateWorker} options={{ title: "শ্রমিক যোগ" }} />
+
+          <Stack.Screen name='News' component={NewsHome} options={{ title: "খবর" }} />
+          <Stack.Screen name='News Detailes' component={NewsDetailes} options={{ title: "খবর বিস্তারিত" }} />
+          <Stack.Screen name='Create News' component={CreateNews} options={{ title: "খবর তৈরী করুন" }} />
 
           <Stack.Screen name='Bus Schedule' component={About} />
         </Stack.Navigator>

@@ -5,7 +5,7 @@ import { IconButton } from 'react-native-paper'
 
 function PageWrapper({ children, isYouWantToFloatButton = [false, "", ""], isYouWantToNavigationBar = [false, ""] }) {
 
-    const hello = [{ name: "Home", icon: ["home", "home-outline"] }, { name: "About", icon: ["information", "information-outline"] }, { name: "Activity", icon: ["file-document-multiple", "file-document-multiple-outline"] }, { name: "User", icon: ["emoticon-happy", "emoticon-happy-outline"] }];
+    const hello = [{ name: "Home", icon: ["home", "home-outline"] }, { name: "Notification", icon: ["bell", "bell-outline"] }, { name: "Activity", icon: ["file-document-multiple", "file-document-multiple-outline"] }, { name: "User", icon: ["emoticon-happy", "emoticon-happy-outline"] }];
 
     const navigation = useNavigation();
     return (
@@ -15,9 +15,12 @@ function PageWrapper({ children, isYouWantToFloatButton = [false, "", ""], isYou
 
                 </View>
                 {children}
-                <View style={{ height: 90 }}>
+                {
+                    isYouWantToNavigationBar[0] ?
+                        <View style={{ height: 90 }}>
 
-                </View>
+                        </View> : null
+                }
             </ScrollView>
             {
                 isYouWantToFloatButton[0] &&
