@@ -1,17 +1,19 @@
-import React, { useState } from 'react'
-import { Image, ScrollView, Text, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { Alert, Image, Pressable, ScrollView, Text, View } from 'react-native'
 import { Button, IconButton, Modal, Portal, TextInput } from 'react-native-paper'
 import * as ImagePicker from "expo-image-picker"
 import { Picker } from '@react-native-picker/picker';
 import PageWrapper from '../../components/PageWrapper';
 import EducationBox from '../../components/EducationBox';
 import EducationShows from '../../components/EducationShows';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 function CreateDoctor(props) {
     const [image, setImage] = useState({});
+    const [shows,setShows] = useState({education:false,chembers:false})
     const [openChemberMode, setOpenChemberMode] = useState(false)
-    const [selectedLanguage, setSelectedLanguage] = useState("মেডিসিন বিশেষজ্ঞ");
     const [doctorTypes, setDoctorTypes] = useState([
         {
             main: "মেডিসিন বিশেষজ্ঞ",
@@ -71,6 +73,10 @@ function CreateDoctor(props) {
 
 
 
+
+    
+    
+
     const [doctorData, setDoctorData] = useState({
         name: "",
         educations: [],
@@ -78,18 +84,34 @@ function CreateDoctor(props) {
         treatments: [],
         chembers: [],
         description: "",
-        doctorType: ""
+        contact:"",
+        doctorType: "মেডিসিন বিশেষজ্ঞ"
     })
 
     function handleCencel() {
-
+        setDoctorData({
+            name: "",
+            educations: [],
+            presentworkplace: "",
+            chembers: [],
+            description: "",
+            contact: "",
+            doctorType: "মেডিসিন বিশেষজ্ঞ"
+        });
+        setImage({})
     }
 
     function handletextChange(fieldName, text) {
         setDoctorData((prev) => ({ ...prev, [fieldName]: text }))
     }
     async function handleSave() {
-
+        
+        const {data} = await axios.post("http://192.168.10.195:9000/create-doctor",doctorData,{headers:{Authorization: await AsyncStorage.getItem("token")}})
+        if (data.mission) {``
+            console.log(data)
+        } else {
+            Alert.alert("doctor create",data.message)
+        }
     }
 
     function returnData(name, education) {
@@ -125,29 +147,39 @@ function CreateDoctor(props) {
                 <IconButton style={{ position: "absolute", bottom: 0, right: 0, backgroundColor: "pink" }} iconColor='white' size={40} icon={"camera"} onPress={pickImage}></IconButton>
             </View>
             <TextInput value={doctorData.name} onChangeText={text => handletextChange("name", text)} key={'name'} mode='outlined' label={"ডাক্টারের নাম"} cursorColor='black' />
-            <Picker
-                placeholder='Type of Doctor'
-                selectedValue={selectedLanguage}
-                mode='dropdown'
-                onValueChange={(itemValue, itemIndex) =>
-                    setSelectedLanguage(itemValue)
-                }
-                style={{ marginTop: 10 }}
+            <View style={{width:"100%",borderWidth:0.2,borderColor:"gray",marginVertical:10}}>
+                
+                <Picker
 
-            >
-                {
-                    doctorTypes.map((item, index) => <Picker.Item key={index} label={`${item.main}`} value={`${item.main}`} />)
-                }
-            </Picker>
+                    selectedValue={doctorData.doctorType}
+                    mode='dropdown'
+                    onValueChange={(itemValue, itemIndex) =>
+                        handletextChange("doctorType",itemValue)
+                    }
+                >
+                    {
+                        doctorTypes.map((item, index) => <Picker.Item key={index} label={`${item.main}`} value={`${item.main}`} />)
+                    }
+                </Picker>
+            </View>
+
+            <Pressable  style={{ width: "100%",display:"flex",flexDirection:"row",position:"relative",alignItems:"center" }}>
+                <View style={{width:"100%",position:"absolute",borderWidth:0.2}}></View>
+                <Text style={{backgroundColor:"white"}}>Educations {doctorData.educations.length}</Text>
+            </Pressable>
             {
                 doctorData.educations.map((item, index) => <EducationShows key={index} edu={item} handleDeleteEdu={handleDeleteEdu} />)
             }
             <EducationBox returnData={returnData} />
             <TextInput value={doctorData.presentworkplace} onChangeText={text => handletextChange("presentworkplace", text)} label={'ভর্তমান কর্মসংস্থান'} mode='outlined' />
-            {/* <TextInput value={treatment} onChangeText={text => handletextChange(text)} mode='outlined' label={'যে যে রোগের চিকিৎসা করেন'} multiline={true} numberOfLines={6} ></TextInput> */}
 
+            {
+                shows.education ? doctorData.chembers && doctorData.chembers.map((item,index) =><ShowChemberBox data={doctorData.chembers} setData={setDoctorData} item={item} key={index} /> ) :null
+            }
             <Button onPress={() => setOpenChemberMode(true)} mode='outlined' style={{ borderRadius: 10, marginTop: 4 }}>চেম্বার</Button>
+            <TextInput value={doctorData.contact} onChangeText={text => handletextChange("contact", text)} label={'যোগাযোগ'} mode='outlined' cursorColor='black' inputMode='tel' />
             <TextInput value={doctorData.description} onChangeText={text => handletextChange("description", text)} label={'ডিস্ক্রিপশন'} mode='outlined' cursorColor='black' multiline={true} numberOfLines={6} />
+                
             <Portal>
                 <Modal visible={openChemberMode} onDismiss={() => setOpenChemberMode(false)} contentContainerStyle={{ backgroundColor: 'white', borderRadius: 15 }} style={{ padding: 20, }} >
                     <ChemberBox returnData={returnData} setOpenChemberMode={setOpenChemberMode} />
@@ -164,6 +196,33 @@ function CreateDoctor(props) {
 
 export default CreateDoctor
 
+function ShowChemberBox({setData,data,item}) {
+    const [show, setShow] = useState(false);
+    function handleDelete() {
+        const filtered = data.filter((items)=>items.chemberName!==item.chemberName)
+        setData((prev)=>({...prev,chembers:filtered}))
+    }
+    return (
+        <Pressable onPress={()=>setShow(!show)} style={{width:"100%",height:"auto",display:"flex",flexDirection:"row",alignItems:"center",justifyContent:"space-between"}}>
+            <View style={{width:"80%",height:"auto"}}>
+                <Text>{item.chemberName}</Text>
+                {
+                    show &&
+                        <>
+                            <Text>{item.chemberDay}</Text>
+                            <Text>{item.startToEnd}</Text>
+                            <Text>{item.phone}</Text>
+                            <Text>{item.remark}</Text>
+                        </>
+                }
+            </View>
+            <IconButton icon={'delete'} onPress={handleDelete} />
+        </Pressable>
+    )
+}
+
+
+
 function ChemberBox({ returnData, setOpenChemberMode }) {
     const [chemberData, setChemberData] = useState({
         chemberName: "",
@@ -179,11 +238,11 @@ function ChemberBox({ returnData, setOpenChemberMode }) {
 
     return (
         <View style={{ paddingHorizontal: 10, paddingVertical: 10 }}>
-            <TextInput value={chemberData.chemberName} onChangeText={text => handletextChange("chemberName", text)} mode='outlined' label={'চেম্বারের নাম'}></TextInput>
-            <TextInput value={chemberData.chemberDay} onChangeText={text => handletextChange("chemberDay", text)} mode='outlined' label={'কি কি বারে'}></TextInput>
-            <TextInput value={chemberData.startToEnd} onChangeText={text => handletextChange("startToEnd", text)} mode='outlined' label={'কয়টা থেকে কয়টা'}></TextInput>
-            <TextInput value={chemberData.phone} onChangeText={text => handletextChange("phone", text)} mode='outlined' label={'ফোন নাম্বার'}></TextInput>
-            <TextInput value={chemberData.remark} onChangeText={text => handletextChange("remark", text)} mode='outlined' label={'note'}></TextInput>
+            <TextInput value={chemberData.chemberName} onChangeText={text => handletextChange("chemberName", text)} inputMode='text' mode='outlined' label={'চেম্বারের নাম'}></TextInput>
+            <TextInput value={chemberData.chemberDay} onChangeText={text => handletextChange("chemberDay", text)} inputMode='text' mode='outlined' label={'কি কি বারে'}></TextInput>
+            <TextInput value={chemberData.startToEnd} onChangeText={text => handletextChange("startToEnd", text)} inputMode='text' mode='outlined' label={'কয়টা থেকে কয়টা'}></TextInput>
+            <TextInput value={chemberData.phone} onChangeText={text => handletextChange("phone", text)} inputMode='text' mode='outlined' label={'ফোন নাম্বার'}></TextInput>
+            <TextInput value={chemberData.remark} onChangeText={text => handletextChange("remark", text)} inputMode='text' mode='outlined' label={'note'}></TextInput>
             <View style={{ display: "flex", marginTop: 10, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                 <Button mode='outlined' onPress={() => {
                     setOpenChemberMode(false)

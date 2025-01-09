@@ -1,7 +1,8 @@
+
 import { NavigationContainer } from '@react-navigation/native';
 import Home from './Screens/Home';
 import About from './Screens/About';
-import { PaperProvider } from "react-native-paper"
+import { IconButton, PaperProvider } from "react-native-paper"
 import Doctor from './Screens/Doctor/Doctor';
 import Hospital from './Screens/Hospital/Hospital';
 import CreateDoctor from './Screens/Doctor/CreateDoctor';
@@ -25,7 +26,10 @@ import MyAllDocuMents from './Screens/MyAllDocuMents';
 import NewsHome from './Screens/News/NewsHome';
 import NewsDetailes from './Screens/News/NewsDetailes';
 import CreateNews from './Screens/News/CreateNews';
-import UserHome from './Screens/UserHome';
+import UserHome from './Screens/User/UserHome';
+import User_Reg_Log from './Screens/User/User_Reg_Log';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Alert } from 'react-native';
 
 const Stack = createNativeStackNavigator()
 
@@ -33,14 +37,28 @@ const Stack = createNativeStackNavigator()
 export default function App() {
   return (
     <PaperProvider>
-      <NavigationContainer >
+      <NavigationContainer  >
         <Stack.Navigator screenOptions={{ animation: "fade" }} initialRouteName='Home' >
           <Stack.Screen name='Home' options={{ title: "ফেনী জেলা" }} component={Home} />
           <Stack.Screen name='Notification' component={About} />
           <Stack.Screen name='Activity' component={MyAllDocuMents} />
-          <Stack.Screen name='User' component={UserHome} />
+          <Stack.Screen name='User' component={UserHome} options={({navigation})=> ({
+            title: "user", headerRight: async() => (
+              <IconButton icon={"door-open"} onPress={() => {
+                Alert.alert("are you want", "are you want to logout this account", [{
+                  text: "OK!", onPress: () => {
+                    AsyncStorage.removeItem("token")
+                    navigation.popTo("User-RegLog")
+                  }
+                }, { text: "cencel", onPress: () => { } }, { text: "clear", onPress: () => { } }])
+            }} />
+          )})} />
+          <Stack.Screen name='User-RegLog' component={User_Reg_Log} />
 
-          <Stack.Screen name='Doctor' component={Doctor} options={{ title: "ডক্টর" }} />
+          <Stack.Screen name='Doctor' component={Doctor} options={({navigation}) => ({
+              title: "ডক্টর", headerRight: () => (
+              <IconButton icon={'folder-plus'} onPress={()=>navigation.navigate("Create Doctor")} />
+             ) })}   />
           <Stack.Screen name='Create Doctor' component={CreateDoctor} options={{ title: "ডক্টর পোষ্ট তৈরী করুন" }} />
 
           <Stack.Screen name='Tourism' component={Tourism} options={{ title: "পর্যটন" }} />
