@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Alert, Image, Pressable, ScrollView, Text, View } from 'react-native'
-import { Button, IconButton, Modal, Portal, TextInput } from 'react-native-paper'
+import { Button, Icon, IconButton, Modal, Portal, RadioButton, TextInput } from 'react-native-paper'
 import * as ImagePicker from "expo-image-picker"
 import { Picker } from '@react-native-picker/picker';
 import PageWrapper from '../../components/PageWrapper';
@@ -12,7 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function CreateDoctor(props) {
     const [image, setImage] = useState({});
-    const [shows,setShows] = useState({education:false,chembers:false})
+    const [shows, setShows] = useState({ education: false, chembers: false })
     const [openChemberMode, setOpenChemberMode] = useState(false)
     const [doctorTypes, setDoctorTypes] = useState([
         {
@@ -74,8 +74,8 @@ function CreateDoctor(props) {
 
 
 
-    
-    
+
+
 
     const [doctorData, setDoctorData] = useState({
         name: "",
@@ -84,8 +84,9 @@ function CreateDoctor(props) {
         treatments: [],
         chembers: [],
         description: "",
-        contact:"",
-        doctorType: "মেডিসিন বিশেষজ্ঞ"
+        contact: "",
+        doctorType: "মেডিসিন বিশেষজ্ঞ",
+        gender: "male",
     })
 
     function handleCencel() {
@@ -96,7 +97,8 @@ function CreateDoctor(props) {
             chembers: [],
             description: "",
             contact: "",
-            doctorType: "মেডিসিন বিশেষজ্ঞ"
+            doctorType: "মেডিসিন বিশেষজ্ঞ",
+            gender: "male"
         });
         setImage({})
     }
@@ -105,12 +107,36 @@ function CreateDoctor(props) {
         setDoctorData((prev) => ({ ...prev, [fieldName]: text }))
     }
     async function handleSave() {
-        
-        const {data} = await axios.post("http://192.168.10.195:9000/create-doctor",doctorData,{headers:{Authorization: await AsyncStorage.getItem("token")}})
-        if (data.mission) {``
-            console.log(data)
+        const { data } = await axios.post("http://192.168.10.195:9000/create-doctor", { ...doctorData, image: image }, { headers: { Authorization: await AsyncStorage.getItem("token") } })
+        if (data.mission) {
+            Alert.alert("doctor posted", data.message, [{
+                text: "OK!", onPress: () => {
+                    setDoctorData({
+                        name: "",
+                        educations: [],
+                        presentworkplace: "",
+                        chembers: [],
+                        description: "",
+                        contact: "",
+                        doctorType: "মেডিসিন বিশেষজ্ঞ",
+                        gender: "male"
+                    });
+                    setImage({});
+                }
+            }, { text: "Go Home", onPress: () => props.navigation.navigate("Home") }, { text: "Go Doctor", onPress: () => props.navigation.navigate("Doctor") }])
+            setDoctorData({
+                name: "",
+                educations: [],
+                presentworkplace: "",
+                chembers: [],
+                description: "",
+                contact: "",
+                doctorType: "মেডিসিন বিশেষজ্ঞ",
+                gender: "male"
+            });
+            setImage({});
         } else {
-            Alert.alert("doctor create",data.message)
+            Alert.alert("doctor create", data.message)
         }
     }
 
@@ -128,11 +154,13 @@ function CreateDoctor(props) {
             mediaTypes: ['images'],
             allowsEditing: true,
             aspect: [4, 3],
-            quality: 1,
+            base64: true,
+
         });
 
         if (!result.canceled) {
             setImage(result.assets[0]);
+
         }
     };
 
@@ -141,20 +169,20 @@ function CreateDoctor(props) {
             <View style={{ margin: "auto", position: "relative", marginBottom: 10 }}>
                 <View style={{ width: 200, height: 200, borderWidth: 1, overflow: 'hidden', borderColor: "black", borderRadius: "100%" }}>
                     {
-                        image && <Image source={{ uri: image.uri }} style={{ width: "100%", height: "100%" }} />
+                        image && <Image source={{ uri: `data:image/jpeg;base64,${image.base64}` }} style={{ width: "100%", height: "100%" }} />
                     }
                 </View>
                 <IconButton style={{ position: "absolute", bottom: 0, right: 0, backgroundColor: "pink" }} iconColor='white' size={40} icon={"camera"} onPress={pickImage}></IconButton>
             </View>
             <TextInput value={doctorData.name} onChangeText={text => handletextChange("name", text)} key={'name'} mode='outlined' label={"ডাক্টারের নাম"} cursorColor='black' />
-            <View style={{width:"100%",borderWidth:0.2,borderColor:"gray",marginVertical:10}}>
-                
+            <View style={{ width: "100%", borderWidth: 0.2, borderColor: "gray", marginVertical: 10 }}>
+
                 <Picker
 
                     selectedValue={doctorData.doctorType}
                     mode='dropdown'
                     onValueChange={(itemValue, itemIndex) =>
-                        handletextChange("doctorType",itemValue)
+                        handletextChange("doctorType", itemValue)
                     }
                 >
                     {
@@ -163,23 +191,41 @@ function CreateDoctor(props) {
                 </Picker>
             </View>
 
-            <Pressable  style={{ width: "100%",display:"flex",flexDirection:"row",position:"relative",alignItems:"center" }}>
-                <View style={{width:"100%",position:"absolute",borderWidth:0.2}}></View>
-                <Text style={{backgroundColor:"white"}}>Educations {doctorData.educations.length}</Text>
+            <View style={{ width: "100%", display: "flex", flexDirection: "row", alignItems: "center", gap: 2 }}>
+                <Text>Gender: </Text>
+                <Pressable onPress={() => setDoctorData((prev) => ({ ...prev, gender: "male" }))} style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+                    <RadioButton onPress={() => setDoctorData((prev) => ({ ...prev, gender: "male" }))} value='male' status={doctorData.gender == "male" ? "checked" : "unchecked"} />
+                    <Text>Male</Text>
+                </Pressable>
+                <Pressable onPress={() => setDoctorData((prev) => ({ ...prev, gender: "female" }))} style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+                    <RadioButton onPress={() => setDoctorData((prev) => ({ ...prev, gender: "female" }))} value='female' status={doctorData.gender == "female" ? "checked" : "unchecked"} />
+                    <Text>Female</Text>
+                </Pressable>
+
+            </View>
+
+            <Pressable onPress={() => setShows((prev) => ({ ...prev, education: !prev.education }))} style={{ width: "100%", display: "flex", flexDirection: "row", position: "relative", alignItems: "center" }}>
+                <View style={{ width: "100%", position: "absolute", borderWidth: 0.2 }}></View>
+                <Text style={{ backgroundColor: "white" }}>Educations {doctorData.educations.length} <Icon source={shows.education ? "arrow-up" : "arrow-down"} /> </Text>
             </Pressable>
             {
-                doctorData.educations.map((item, index) => <EducationShows key={index} edu={item} handleDeleteEdu={handleDeleteEdu} />)
+                shows.education && doctorData.educations.map((item, index) => <EducationShows key={index} edu={item} handleDeleteEdu={handleDeleteEdu} />)
             }
             <EducationBox returnData={returnData} />
             <TextInput value={doctorData.presentworkplace} onChangeText={text => handletextChange("presentworkplace", text)} label={'ভর্তমান কর্মসংস্থান'} mode='outlined' />
 
+            <Pressable onPress={() => setShows((prev) => ({ ...prev, chembers: !prev.chembers }))} style={{ width: "100%", display: "flex", flexDirection: "row", position: "relative", alignItems: "center" }}>
+                <View style={{ width: "100%", position: "absolute", borderWidth: 0.2 }}></View>
+                <Text style={{ backgroundColor: "white" }}>Chembers {doctorData.chembers.length} <Icon source={shows.chembers ? "arrow-up" : "arrow-down"} /> </Text>
+            </Pressable>
+
             {
-                shows.education ? doctorData.chembers && doctorData.chembers.map((item,index) =><ShowChemberBox data={doctorData.chembers} setData={setDoctorData} item={item} key={index} /> ) :null
+                shows.chembers && doctorData.chembers && doctorData.chembers.map((item, index) => <ShowChemberBox data={doctorData.chembers} setData={setDoctorData} item={item} key={index} />)
             }
             <Button onPress={() => setOpenChemberMode(true)} mode='outlined' style={{ borderRadius: 10, marginTop: 4 }}>চেম্বার</Button>
             <TextInput value={doctorData.contact} onChangeText={text => handletextChange("contact", text)} label={'যোগাযোগ'} mode='outlined' cursorColor='black' inputMode='tel' />
             <TextInput value={doctorData.description} onChangeText={text => handletextChange("description", text)} label={'ডিস্ক্রিপশন'} mode='outlined' cursorColor='black' multiline={true} numberOfLines={6} />
-                
+
             <Portal>
                 <Modal visible={openChemberMode} onDismiss={() => setOpenChemberMode(false)} contentContainerStyle={{ backgroundColor: 'white', borderRadius: 15 }} style={{ padding: 20, }} >
                     <ChemberBox returnData={returnData} setOpenChemberMode={setOpenChemberMode} />
@@ -196,24 +242,24 @@ function CreateDoctor(props) {
 
 export default CreateDoctor
 
-function ShowChemberBox({setData,data,item}) {
+function ShowChemberBox({ setData, data, item }) {
     const [show, setShow] = useState(false);
     function handleDelete() {
-        const filtered = data.filter((items)=>items.chemberName!==item.chemberName)
-        setData((prev)=>({...prev,chembers:filtered}))
+        const filtered = data.filter((items) => items.chemberName !== item.chemberName)
+        setData((prev) => ({ ...prev, chembers: filtered }))
     }
     return (
-        <Pressable onPress={()=>setShow(!show)} style={{width:"100%",height:"auto",display:"flex",flexDirection:"row",alignItems:"center",justifyContent:"space-between"}}>
-            <View style={{width:"80%",height:"auto"}}>
+        <Pressable onPress={() => setShow(!show)} style={{ width: "100%", height: "auto", display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+            <View style={{ width: "80%", height: "auto" }}>
                 <Text>{item.chemberName}</Text>
                 {
                     show &&
-                        <>
-                            <Text>{item.chemberDay}</Text>
-                            <Text>{item.startToEnd}</Text>
-                            <Text>{item.phone}</Text>
-                            <Text>{item.remark}</Text>
-                        </>
+                    <>
+                        <Text>{item.chemberDay}</Text>
+                        <Text>{item.startToEnd}</Text>
+                        <Text>{item.phone}</Text>
+                        <Text>{item.remark}</Text>
+                    </>
                 }
             </View>
             <IconButton icon={'delete'} onPress={handleDelete} />

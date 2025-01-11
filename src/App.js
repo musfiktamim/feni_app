@@ -30,6 +30,7 @@ import UserHome from './Screens/User/UserHome';
 import User_Reg_Log from './Screens/User/User_Reg_Log';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
+import DetailesDoctor from './Screens/Doctor/DetailesDoctor';
 
 const Stack = createNativeStackNavigator()
 
@@ -42,8 +43,8 @@ export default function App() {
           <Stack.Screen name='Home' options={{ title: "ফেনী জেলা" }} component={Home} />
           <Stack.Screen name='Notification' component={About} />
           <Stack.Screen name='Activity' component={MyAllDocuMents} />
-          <Stack.Screen name='User' component={UserHome} options={({navigation})=> ({
-            title: "user", headerRight: async() => (
+          <Stack.Screen name='User' component={UserHome} options={({ navigation }) => ({
+            title: "user", headerRight: async () => (
               <IconButton icon={"door-open"} onPress={() => {
                 Alert.alert("are you want", "are you want to logout this account", [{
                   text: "OK!", onPress: () => {
@@ -51,14 +52,17 @@ export default function App() {
                     navigation.popTo("User-RegLog")
                   }
                 }, { text: "cencel", onPress: () => { } }, { text: "clear", onPress: () => { } }])
-            }} />
-          )})} />
+              }} />
+            )
+          })} />
           <Stack.Screen name='User-RegLog' component={User_Reg_Log} />
 
-          <Stack.Screen name='Doctor' component={Doctor} options={({navigation}) => ({
-              title: "ডক্টর", headerRight: () => (
-              <IconButton icon={'folder-plus'} onPress={()=>navigation.navigate("Create Doctor")} />
-             ) })}   />
+          <Stack.Screen name='Doctor' component={Doctor} options={({ navigation }) => ({
+            title: "ডক্টর", headerRight: () => (
+              <IconButton icon={'folder-plus'} onPress={() => navigation.navigate("Create Doctor")} />
+            )
+          })} />
+          <Stack.Screen name='Doctor Detailes' component={DetailesDoctor} options={{ title: "doctor detailes", }} />
           <Stack.Screen name='Create Doctor' component={CreateDoctor} options={{ title: "ডক্টর পোষ্ট তৈরী করুন" }} />
 
           <Stack.Screen name='Tourism' component={Tourism} options={{ title: "পর্যটন" }} />
