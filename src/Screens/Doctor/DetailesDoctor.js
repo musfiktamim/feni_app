@@ -1,13 +1,16 @@
-import React from 'react'
-import { Image, Linking, ScrollView, Text, View } from 'react-native'
+import React, { useState } from 'react'
+import { Alert, Image, Linking, Pressable, ScrollView, Text, View } from 'react-native'
 import PageWrapper from '../../components/PageWrapper'
-import { IconButton } from 'react-native-paper'
+import { Button, IconButton } from 'react-native-paper'
 
 function DetailesDoctor({ navigation, route }) {
     console.log(navigation)
     console.log(route)
+    const [shows, setShows] = useState({
+        descriptionShow: false
+    })
 
-    const { name, picture, doctor_type, educations, chembers } = route.params.item
+    const { name, picture, doctor_type, educations, chembers, description } = route.params.item
 
     return (
         <ScrollView>
@@ -32,21 +35,25 @@ function DetailesDoctor({ navigation, route }) {
                     <Text style={{ width: "100%", fontSize: 22, color: "#DE1976", marginBottom: 5, borderBottomWidth: 3, borderBottomColor: "#DE1976" }}>চেম্বার</Text>
                     {chembers.length != 0 ?
                         chembers.map((item, index) => (
-                            <View key={index} >
-                                <View style={{ marginBottom: 10, borderBottomWidth: 1, width: "85%", borderBottomColor: "#DE1976", margin: "auto" }}>
-                                    <Text style={{ fontSize: 20, color: "#DE1976" }}>{index + 1}. {item.chemberName}</Text>
+                            <View key={index} style={{ width: "98%", borderRadius: 5, borderWidth: 0.2, paddingHorizontal: 5, paddingVertical: 2 }} >
+                                <Text style={{ fontSize: 17 }}>চেম্বারের নামঃ {item.chemberName}</Text>
+                                <Text style={{ fontSize: 17 }}>দিনঃ {item.chemberDay}</Text>
+                                <Text style={{ fontSize: 17 }}>সময়ঃ {item.startToEnd}</Text>
+                                <Text style={{ fontSize: 17 }}>চেম্বারের নাম্বারঃ {item.phone}</Text>
+                                {item.remark && <Text style={{ fontSize: 17 }}>জানাতে চায়ঃ {item.remark}</Text>}
+                                <View style={{ width: "100%", margin: "auto", display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                                    <Button style={{ width: "85%", borderRadius: 10, height: 40 }} buttonColor='#DE1976' mode='contained'>{item.phone}</Button>
+                                    <IconButton icon={"phone"} iconColor='white' style={{ borderRadius: 10 }} containerColor='green' onPress={() => Alert.alert("call", `আপনি কি ${item.chemberName} চেম্বারে কল করতে চান`, [{ text: "হ্যাঁ!", onPress: () => { Linking.openURL(`tel:${item.phone}`) } }, { text: "না!", onPress: () => { } }])} />
                                 </View>
-                                <Text style={{ fontSize: 16 }}>{item.chemberDay}</Text>
-                                <Text style={{ fontSize: 16 }}>{item.startToEnd}</Text>
-                                <Text style={{ fontSize: 16 }}>{item.phone}</Text>
-                                <Text style={{ fontSize: 16 }}>{item.remark}</Text>
-                                <View style={{ margin: "auto", borderBottomWidth: 1, borderBlockColor: "#DE1976" }}>
-                                    <IconButton icon={"phone"} iconColor='white' style={{ borderRadius: 10 }} containerColor='green' onPress={() => Linking.openURL(`tel:${item.phone}`)} />
-                                </View>
-                                <View style={{ width: "90%", margin: "auto", borderBottomWidth: 1, borderBlockColor: "#DE1976", marginTop: 5 }}></View>
+                                <View style={{ width: "90%", margin: "auto", marginTop: 5 }}></View>
                             </View>
                         ))
                         : null}
+
+                    <Text style={{ width: "100%", fontSize: 22, color: "#DE1976", marginBottom: 5, borderBottomWidth: 3, borderBottomColor: "#DE1976" }}>বিবরনী</Text>
+                    <Pressable onPress={() => setShows((prev) => ({ ...prev, descriptionShow: !prev.descriptionShow }))}>
+                        {description && <Text>{description}</Text>}
+                    </Pressable>
                 </View>
             </View>
         </ScrollView>

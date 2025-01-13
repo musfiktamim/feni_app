@@ -11,7 +11,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 function CreateDoctor(props) {
-    const [image, setImage] = useState({});
     const [shows, setShows] = useState({ education: false, chembers: false })
     const [openChemberMode, setOpenChemberMode] = useState(false)
     const [doctorTypes, setDoctorTypes] = useState([
@@ -87,6 +86,7 @@ function CreateDoctor(props) {
         contact: "",
         doctorType: "মেডিসিন বিশেষজ্ঞ",
         gender: "male",
+        image: ""
     })
 
     function handleCencel() {
@@ -98,17 +98,28 @@ function CreateDoctor(props) {
             description: "",
             contact: "",
             doctorType: "মেডিসিন বিশেষজ্ঞ",
-            gender: "male"
+            gender: "male",
+            image: ""
         });
-        setImage({})
     }
 
     function handletextChange(fieldName, text) {
         setDoctorData((prev) => ({ ...prev, [fieldName]: text }))
     }
     async function handleSave() {
-        const { data } = await axios.post("http://192.168.10.195:9000/create-doctor", { ...doctorData, image: image }, { headers: { Authorization: await AsyncStorage.getItem("token") } })
+        const { data } = await axios.post("http://192.168.10.195:9000/create-doctor", doctorData, { headers: { Authorization: await AsyncStorage.getItem("token") } })
         if (data.mission) {
+            setDoctorData({
+                name: "",
+                educations: [],
+                presentworkplace: "",
+                chembers: [],
+                description: "",
+                contact: "",
+                doctorType: "মেডিসিন বিশেষজ্ঞ",
+                gender: "male",
+                image: ""
+            });
             Alert.alert("doctor posted", data.message, [{
                 text: "OK!", onPress: () => {
                     setDoctorData({
@@ -119,9 +130,9 @@ function CreateDoctor(props) {
                         description: "",
                         contact: "",
                         doctorType: "মেডিসিন বিশেষজ্ঞ",
-                        gender: "male"
+                        gender: "male",
+                        image: ""
                     });
-                    setImage({});
                 }
             }, { text: "Go Home", onPress: () => props.navigation.navigate("Home") }, { text: "Go Doctor", onPress: () => props.navigation.navigate("Doctor") }])
             setDoctorData({
@@ -132,9 +143,9 @@ function CreateDoctor(props) {
                 description: "",
                 contact: "",
                 doctorType: "মেডিসিন বিশেষজ্ঞ",
-                gender: "male"
+                gender: "male",
+                image: ""
             });
-            setImage({});
         } else {
             Alert.alert("doctor create", data.message)
         }
@@ -159,7 +170,7 @@ function CreateDoctor(props) {
         });
 
         if (!result.canceled) {
-            setImage(result.assets[0]);
+            setDoctorData((prev) => ({ ...prev, image: result.assets[0].base64 }));
 
         }
     };
@@ -169,7 +180,7 @@ function CreateDoctor(props) {
             <View style={{ margin: "auto", position: "relative", marginBottom: 10 }}>
                 <View style={{ width: 200, height: 200, borderWidth: 1, overflow: 'hidden', borderColor: "black", borderRadius: "100%" }}>
                     {
-                        image && <Image source={{ uri: `data:image/jpeg;base64,${image.base64}` }} style={{ width: "100%", height: "100%" }} />
+                        image && <Image source={{ uri: `data:image/jpeg;base64,${doctorData.image}` }} style={{ width: "100%", height: "100%" }} />
                     }
                 </View>
                 <IconButton style={{ position: "absolute", bottom: 0, right: 0, backgroundColor: "pink" }} iconColor='white' size={40} icon={"camera"} onPress={pickImage}></IconButton>
