@@ -20,6 +20,9 @@ function DoctorBox({ item, navigation }) {
                     <View style={{ flexDirection: "row" }}>
                         <Text style={{ fontSize: getFontSize(15), flexWrap: "wrap", flex: 1 }}>শিক্ষাঃ {item.educations.length > 0 ? item.educations.map((item) => `${item.exam} ,`) : null}</Text>
                     </View>
+                    <View style={{ flexDirection: "row" }}>
+                        <Text style={{ fontSize: getFontSize(15), flexWrap: "wrap", flex: 1 }}>sex {item.gender}</Text>
+                    </View>
                 </View>
             </View>
             <View style={{ width: "100%", height: "auto", flexDirection: "row" }}>

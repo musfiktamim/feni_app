@@ -6,35 +6,31 @@ import { TouchableOpacityComponent } from 'react-native'
 import PageWrapper from '../../components/PageWrapper'
 
 function CreateTourism(props) {
-    const [image, setImage] = useState([])
-
-    const [textingDatas, setTextingDatas] = useState(
+    const [tourismData, setTourismData] = useState(
         {
             title: "",
             location: "",
             naming: "",
-            description: ""
+            description: "",
+            image:[]
         }
     )
 
     function handleTextChange(fieldName, text) {
-        setTextingDatas((prev) => ({ ...prev, [fieldName]: text }))
+        setTourismData((prev) => ({ ...prev, [fieldName]: text }))
     }
 
     function handleCencel() {
-        setImage([]);
-        setTextingDatas({
+        setTourismData({
             title: "",
             location: "",
             naming: "",
-            description: ""
+            description: "",
+            
         })
     }
     function handleSave() {
-        const detaies = {
-            ...textingDatas,
-            images: [...image]
-        }
+        console.log(tourismData)
     }
 
 
@@ -45,18 +41,19 @@ function CreateTourism(props) {
             allowsEditing: true,
             aspect: [4, 3],
             quality: 1,
-            allowsMultipleSelection: true
+            allowsMultipleSelection: true,
+            base64:true
         });
 
 
         if (!result.canceled) {
-            setImage((prev) => prev ? [...result.assets, ...prev] : [...result.assets]);
+            // setTourismData((prev) =>( {...prev ,image : prev.image ? [...[result.assets.map((item)=>item.base64)], ...prev] : [...result.assets.map((item)=>item.base64)]}));
         }
     };
 
-    function handleCencelImages(fileNames) {
-        const filtered = image.filter((item) => item.fileName != fileNames)
-        setImage(filtered)
+    function handleCencelImages(itemID) {
+        const filtered = tourismData.image.filter((item) => item != itemID)
+        setTourismData((prev)=>({...prev, image:filtered}))
     }
 
     return (
@@ -64,9 +61,9 @@ function CreateTourism(props) {
             <View style={{ width: "100%", height: 200, marginTop: 5 }} >
                 <ScrollView showsHorizontalScrollIndicator={false} horizontal style={{ flexGrow: 1, gap: 4, display: "flex", flexDirection: "row", paddingVertical: 2, paddingHorizontal: 2, paddingRight: 200 }}>
                     {
-                        image && image.map((item, index) => <View key={index} style={{ height: "100%", width: 200, borderRadius: 10, marginLeft: 10, overflow: "hidden" }}>
-                            <Image style={{ width: "100%", height: "100%" }} source={{ uri: item.uri }} />
-                            <IconButton onPress={() => handleCencelImages(item.fileName)} icon={"delete"} style={{ position: "absolute", right: 0, top: 0 }} iconColor='white' />
+                        tourismData.image && tourismData.image.map((item, index) => <View key={index} style={{ height: "100%", width: 200, borderRadius: 10, marginLeft: 10, overflow: "hidden" }}>
+                            <Image style={{ width: "100%", height: "100%" }} source={{ uri: `data:image/jpeg;base64,${item}` }} />
+                            <IconButton onPress={() => handleCencelImages(item)} icon={"delete"} style={{ position: "absolute", right: 0, top: 0 }} iconColor='white' />
                         </View>)
                     }
                     <TouchableOpacity style={{ width: 200, height: "100%", borderRadius: 10, borderWidth: 3 }} onPress={pickImage}>
@@ -76,10 +73,10 @@ function CreateTourism(props) {
                     </TouchableOpacity>
                 </ScrollView>
             </View>
-            <TextInput onChangeText={text => handleTextChange("title", text)} value={textingDatas.title} label='টাইটেল' mode='outlined' />
-            <TextInput onChangeText={text => handleTextChange("location", text)} value={textingDatas.location} label='অবস্থান' mode='outlined' />
-            <TextInput onChangeText={text => handleTextChange("naming", text)} value={textingDatas.naming} label='নাম করণ' mode='outlined' />
-            <TextInput onChangeText={text => handleTextChange("description", text)} value={textingDatas.description} label='ডিস্ক্রিপশন' mode='outlined' />
+            <TextInput onChangeText={text => handleTextChange("title", text)} value={tourismData.title} label='টাইটেল' mode='outlined' />
+            <TextInput onChangeText={text => handleTextChange("location", text)} value={tourismData.location} label='অবস্থান' mode='outlined' />
+            <TextInput onChangeText={text => handleTextChange("naming", text)} value={tourismData.naming} label='নাম করণ' mode='outlined' />
+            <TextInput onChangeText={text => handleTextChange("description", text)} value={tourismData.description} label='ডিস্ক্রিপশন' mode='outlined' />
             <View style={{ width: "95%", margin: "auto" }}>
                 <Button onPress={handleSave} style={{ width: "100%", borderRadius: 10, marginTop: 5 }} mode='contained'>সেভ করুন</Button>
                 <Button onPress={handleCencel} style={{ width: "100%", borderRadius: 10, marginTop: 5 }} mode='outlined'>বাতিল করুন</Button>

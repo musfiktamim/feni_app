@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Image, ScrollView, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { Alert, Image, ScrollView, View } from 'react-native'
 import PageWrapper from '../../components/PageWrapper'
 import { Button, IconButton, TextInput } from 'react-native-paper'
 import * as ImagePicker from "expo-image-picker"
@@ -8,6 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 
 function CreateBlood(props) {
     const [blood, setBlood] = useState("A+")
+    const [disableSaveButton,setDisableSaveButton] = useState(false)
 
     const bloodGroups = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"]
 
@@ -60,9 +61,27 @@ function CreateBlood(props) {
         })
     }
 
-    async function handleSave() {
+    async function handleSave(e) {
+        setDisableSaveButton(true)
         const { data } = await axios.post("http://192.168.10.195:9000/blood-create", bloodData, { headers: { Authorization: await AsyncStorage.getItem("token") } })
+        if(!data.mission){
+            Alert.alert("wrong",data.message)
+        }else{
+            await Alert.alert("OK!",data.message)
+            setBloodData({
+                name: "",
+                himoglobin: "",
+                contact: "",
+                last: "",
+                doned: "",
+                remark: "",
+                blood_group: "A+",
+                image: "",
+            })
+        }
+        setDisableSaveButton(false)
     }
+
 
     function handleTextChange(feildName, text) {
         setBloodData((prev) => ({ ...prev, [feildName]: text }))
@@ -98,7 +117,7 @@ function CreateBlood(props) {
             </View>
             <View style={{ width: "95%", margin: "auto", display: "flex", justifyContent: "space-between", flexDirection: "row", marginTop: 10 }}>
                 <Button onPress={handleCencel} style={{ width: "49%", borderRadius: 10 }} mode='outlined'>Cencel</Button>
-                <Button onPress={handleSave} style={{ width: "49%", borderRadius: 10 }} mode='contained'>Save</Button>
+                <Button disabled={disableSaveButton?true:false} onPress={handleSave} style={{ width: "49%", borderRadius: 10 }} mode='contained'>Save</Button>
             </View>
         </PageWrapper>
     )

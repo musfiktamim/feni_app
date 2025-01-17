@@ -6,25 +6,17 @@ import DoctorBox from '../../Elements/DoctorBox'
 import PageWrapper from '../../components/PageWrapper'
 import { useNavigation } from '@react-navigation/native'
 import { getDoctorAll } from '../../api/api'
+import { useQuery } from '@tanstack/react-query'
 
 function Doctor(props) {
     const [openModel, setOpenModel] = useState(false)
     const [modelFilter, setModelFilter] = useState([])
+    const [page,setPage] = useState(0)
 
-    const [doctors, setDoctors] = useState([]);
-
-
-
-    useEffect(() => {
-        (async () => {
-            const res = await getDoctorAll()
-            if (res.mission) {
-                setDoctors((prev) => [...prev, ...res.data])
-            } else {
-                Alert.alert("something wrong", res.message)
-            }
-        })()
-    }, [])
+    const {data,isError,error,isLoading} = useQuery({
+        queryKey:["doctors",page],
+        queryFn: getDoctorAll,
+    })
 
     const navigation = useNavigation()
 
@@ -48,7 +40,13 @@ function Doctor(props) {
             </View>
             <ScrollView style={{ marginTop: 10, display: "flex", paddingHorizontal: 5, paddingBottom: 10 }}>
                 {
-                    doctors.map((item, index) => <DoctorBox navigation={navigation} key={index} item={item} />)
+                    isLoading?<Text>Loading</Text>:null
+                }
+                {
+                    isError && <Text>{error.message}</Text>
+                }
+                {
+                    data && data.data?.map((item, index) => <DoctorBox navigation={navigation} key={index} item={item} />)
                 }
             </ScrollView>
         </PageWrapper>

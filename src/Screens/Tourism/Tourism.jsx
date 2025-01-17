@@ -14,7 +14,7 @@ function Tourism(props) {
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={{ display: "flex", gap: 10 }}>
                     {tourismItems.map((item) => (
-                        <TourismBox key={item} navigationId={item.toString()} naviationLiks={"Tourism Detailes"} />
+                        <TourismBox key={item} item={item} navigationId={item.toString()} naviationLiks={"Tourism Detailes"} />
                     ))}
                 </View>
             </ScrollView>

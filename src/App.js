@@ -31,15 +31,18 @@ import User_Reg_Log from './Screens/User/User_Reg_Log';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
 import DetailesDoctor from './Screens/Doctor/DetailesDoctor';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const Stack = createNativeStackNavigator()
 
-
 export default function App() {
+  const queryClient = new QueryClient()
   return (
+    <QueryClientProvider client={queryClient} >
+
     <PaperProvider>
       <NavigationContainer  >
-        <Stack.Navigator screenOptions={{ animation: "fade" }} initialRouteName='Home' >
+        <Stack.Navigator screenOptions={{ animation: "flip" }} initialRouteName='Home' >
           <Stack.Screen name='Home' options={{ title: "ফেনী জেলা" }} component={Home} />
           <Stack.Screen name='Notification' component={About} />
           <Stack.Screen name='Activity' component={MyAllDocuMents} />
@@ -96,5 +99,6 @@ export default function App() {
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider >
+    </QueryClientProvider>
   );
 }

@@ -10,7 +10,7 @@ function DetailesDoctor({ navigation, route }) {
         descriptionShow: false
     })
 
-    const { name, picture, doctor_type, educations, chembers, description } = route.params.item
+    const { name, picture, doctor_type, educations, chembers, description,present_workplace } = route.params.item
 
     return (
         <ScrollView>
@@ -21,6 +21,7 @@ function DetailesDoctor({ navigation, route }) {
                 <View style={{ display: "flex", flexDirection: "row", width: "100%", alignItems: "center" }}>
                     <Text style={{ fontSize: 25, color: "#DE1976", position: "relative" }}>{name}<Text style={{ fontSize: 16, color: "gray", position: "absolute", top: 0 }}>...({doctor_type} )</Text></Text>
                 </View>
+                <Text style={{fontSize:14,color:"gray"}}>{present_workplace}</Text>
                 <View style={{ width: "100%", marginTop: 10 }}>
                     <Text style={{ width: "100%", fontSize: 22, color: "#DE1976", marginBottom: 5, borderBottomWidth: 3, borderBottomColor: "#DE1976" }}>শিক্ষা</Text>
                     {educations.length != 0 ?
