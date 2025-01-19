@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { Alert, Image, Pressable, ScrollView, Text, View } from 'react-native'
-import { Button, Icon, IconButton, Modal, Portal, RadioButton, TextInput } from 'react-native-paper'
+import { Alert, Image, Pressable, ScrollView, Text, ToastAndroid, View } from 'react-native'
+import { Button, Icon, IconButton, MD3Colors, Modal, Portal, ProgressBar, RadioButton, TextInput } from 'react-native-paper'
 import * as ImagePicker from "expo-image-picker"
 import { Picker } from '@react-native-picker/picker';
 import PageWrapper from '../../components/PageWrapper';
@@ -8,11 +8,14 @@ import EducationBox from '../../components/EducationBox';
 import EducationShows from '../../components/EducationShows';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useMutation } from '@tanstack/react-query';
+import { createDoctor } from '../../api/api';
+import ProgressBarForTop from '../../components/ProgressBarForTop';
 
 
 function CreateDoctor(props) {
     const [shows, setShows] = useState({ education: false, chembers: false })
-    const [disableSaveButton,setDisableSaveButton] = useState(false)
+    // const [disableSaveButton,setDisableSaveButton] = useState(false)
     const [openChemberMode, setOpenChemberMode] = useState(false)
     const [doctorTypes, setDoctorTypes] = useState([
         {
@@ -107,51 +110,47 @@ function CreateDoctor(props) {
     function handletextChange(fieldName, text) {
         setDoctorData((prev) => ({ ...prev, [fieldName]: text }))
     }
+
+    const {mutate,isPending,isError,error} = useMutation({
+        mutationFn:(data)=>createDoctor(data),
+        onSuccess:(res)=>{
+            if(res.mission){
+                Alert.alert("doctor posted", res.message, [{
+                    text: "OK!", onPress: () => {
+                        setDoctorData({
+                            name: "",
+                            educations: [],
+                            presentworkplace: "",
+                            chembers: [],
+                            description: "",
+                            contact: "",
+                            doctorType: "মেডিসিন বিশেষজ্ঞ",
+                            gender: "male",
+                            image: ""
+                        });
+                    }
+                },
+                 { text: "Go Home", onPress: () => 
+                    props.navigation.navigate("Home")
+                 },
+                 { text: "Go Doctor", onPress: () =>
+                     props.navigation.navigate("Doctor") 
+                }])
+            }else{
+                Alert.alert("doctor posted", res.message)
+            }
+        },
+        onError:(err)=>{
+            Alert.alert("wrong",err.message)
+        },
+    })
+
     async function handleSave() {
-        setDisableSaveButton(true)
-        const { data } = await axios.post("http://192.168.10.195:9000/create-doctor", doctorData, { headers: { Authorization: await AsyncStorage.getItem("token") } })
-        if (data.mission) {
-            setDoctorData({
-                name: "",
-                educations: [],
-                presentworkplace: "",
-                chembers: [],
-                description: "",
-                contact: "",
-                doctorType: "মেডিসিন বিশেষজ্ঞ",
-                gender: "male",
-                image: ""
-            });
-            Alert.alert("doctor posted", data.message, [{
-                text: "OK!", onPress: () => {
-                    setDoctorData({
-                        name: "",
-                        educations: [],
-                        presentworkplace: "",
-                        chembers: [],
-                        description: "",
-                        contact: "",
-                        doctorType: "মেডিসিন বিশেষজ্ঞ",
-                        gender: "male",
-                        image: ""
-                    });
-                }
-            }, { text: "Go Home", onPress: () => props.navigation.navigate("Home") }, { text: "Go Doctor", onPress: () => props.navigation.navigate("Doctor") }])
-            setDoctorData({
-                name: "",
-                educations: [],
-                presentworkplace: "",
-                chembers: [],
-                description: "",
-                contact: "",
-                doctorType: "মেডিসিন বিশেষজ্ঞ",
-                gender: "male",
-                image: ""
-            });
-        } else {
-            Alert.alert("doctor create", data.message)
+        if(doctorData.name && doctorData.contact && doctorData.doctorType && doctorData.image && doctorData.gender && doctorData.educations.length > 0){
+            mutate(doctorData)
+        }else{
+            ToastAndroid.show('plz fill all required fields',500)
         }
-        setDisableSaveButton(false)
     }
 
     function returnData(name, education) {
@@ -179,6 +178,11 @@ function CreateDoctor(props) {
     };
 
     return (
+        <>
+            {
+                isPending &&
+                    <ProgressBarForTop isLoad={true} />
+            }        
         <PageWrapper >
             <View style={{ margin: "auto", position: "relative", marginBottom: 10 }}>
                 <View style={{ width: 200, height: 200, borderWidth: 1, overflow: 'hidden', borderColor: "black", borderRadius: "100%" }}>
@@ -188,6 +192,8 @@ function CreateDoctor(props) {
                 </View>
                 <IconButton style={{ position: "absolute", bottom: 0, right: 0, backgroundColor: "pink" }} iconColor='white' size={40} icon={"camera"} onPress={pickImage}></IconButton>
             </View>
+            <ScrollView showsVerticalScrollIndicator={false}>
+
             <TextInput value={doctorData.name} onChangeText={text => handletextChange("name", text)} key={'name'} mode='outlined' label={"ডাক্টারের নাম"} cursorColor='black' />
             <View style={{ width: "100%", borderWidth: 0.2, borderColor: "gray", marginVertical: 10 }}>
 
@@ -248,9 +254,11 @@ function CreateDoctor(props) {
 
             <View style={{ width: "100%", marginTop: 10, display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
                 <Button onPress={handleCencel} mode='outlined' style={{ width: "49%", borderRadius: 10 }} >বাতিল করুন </Button>
-                <Button disabled={disableSaveButton} onPress={handleSave} mode='contained' style={{ width: "49%", borderRadius: 10 }} >পোষ্ট করুন</Button>
+                <Button disabled={isPending} onPress={handleSave} mode='contained' style={{ width: "49%", borderRadius: 10 }} >পোষ্ট করুন</Button>
             </View>
+            </ScrollView>
         </PageWrapper>
+        </>
     )
 }
 

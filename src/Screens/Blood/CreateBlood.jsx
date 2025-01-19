@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import { Alert, Image, ScrollView, View } from 'react-native'
+import { Alert, Image, ScrollView, ToastAndroid, View } from 'react-native'
 import PageWrapper from '../../components/PageWrapper'
-import { Button, IconButton, TextInput } from 'react-native-paper'
+import { Button, IconButton, MD3Colors, ProgressBar, TextInput } from 'react-native-paper'
 import * as ImagePicker from "expo-image-picker"
 import axios from 'axios'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useMutation } from '@tanstack/react-query'
+import { createBlood } from '../../api/api'
+import ProgressBarForTop from '../../components/ProgressBarForTop'
 
 function CreateBlood(props) {
     const [blood, setBlood] = useState("A+")
@@ -50,36 +53,57 @@ function CreateBlood(props) {
 
     function handleCencel() {
         setBloodData({
-            name: "",
-            himoglobin: "",
+            image: "",
+            donner_name: "",
             contact: "",
+            date_of_birth: "",
+            height: "",
+            Weight: "",
+            blood_group: "A+",
+            hemoglobin: "",
             last: "",
             doned: "",
+            description: "",
             remark: "",
-            blood_group: "A+",
-            image: "",
         })
     }
 
+    const {mutate,isPending,isSuccess,isError,error} = useMutation({
+        mutationFn:(data)=>createBlood(data),
+        onSuccess:(res)=>{
+            if(res.mission){
+                ToastAndroid.show(res.message)
+                setBloodData({
+                    image: "",
+                    donner_name: "",
+                    contact: "",
+                    date_of_birth: "",
+                    height: "",
+                    Weight: "",
+                    blood_group: "A+",
+                    hemoglobin: "",
+                    last: "",
+                    doned: "",
+                    description: "",
+                    remark: "",
+                })
+            }else{
+                ToastAndroid.show("wrong",res.message)
+            }
+        },
+        onError:(error)=>{
+            ToastAndroid.show(error.message,100)
+        },
+    })
+
     async function handleSave(e) {
-        setDisableSaveButton(true)
-        const { data } = await axios.post("http://192.168.10.195:9000/blood-create", bloodData, { headers: { Authorization: await AsyncStorage.getItem("token") } })
-        if(!data.mission){
-            Alert.alert("wrong",data.message)
-        }else{
-            await Alert.alert("OK!",data.message)
-            setBloodData({
-                name: "",
-                himoglobin: "",
-                contact: "",
-                last: "",
-                doned: "",
-                remark: "",
-                blood_group: "A+",
-                image: "",
-            })
-        }
-        setDisableSaveButton(false)
+
+        mutate(bloodData)
+        // if(bloodData.donner_name && bloodData.contact && bloodData.blood_group && bloodData.image){
+        // }else{
+        //     ToastAndroid.showWithGravityAndOffset("flz filed all fileds",1000,1000,100,100)
+            
+        // }
     }
 
 
@@ -88,12 +112,17 @@ function CreateBlood(props) {
     }
 
     return (
-        <PageWrapper >
-            <View style={{ position: "relative", width: 150, height: 150, borderWidth: 1, margin: "auto" }}>
+        <>
+        
+            {
+                isPending &&
+                <ProgressBarForTop isLoad={true} />
+            }
+        <ScrollView showsVerticalScrollIndicator={false} >
+            <View style={{ position: "relative", marginTop:10,width: 150, height: 150, borderWidth: 1, margin: "auto" }}>
                 {bloodData.image && <Image source={{ uri: `data:image/jpeg;base64,${bloodData.image}` }} style={{ width: "100%", height: "100%" }} />}
                 <IconButton icon={"camera"} style={{ position: "absolute", bottom: -25, borderWidth: 1, right: -25, backgroundColor: "gray" }} iconColor='white' onPress={pickImage} />
             </View>
-
             <View style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop: 30 }}>
                 <View style={{ width: "95%", display: "flex", flexDirection: "row" }}>
                     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -102,7 +131,10 @@ function CreateBlood(props) {
                         }
                     </ScrollView>
                 </View>
-                <TextInput onChangeText={text => handleTextChange("donner_name", text)} value={bloodData.name} style={{ width: "95%" }} mode='outlined' label={"Name"} />
+                
+
+               
+                <TextInput onChangeText={text => handleTextChange("donner_name", text)} value={bloodData.donner_name} style={{ width: "95%" }} mode='outlined' label={"Name"} />
                 <TextInput onChangeText={text => handleTextChange("date_of_birth", text)} value={bloodData.date_of_birth} style={{ width: "95%" }} mode='outlined' label={"day-month-year"} />
                 <TextInput onChangeText={text => handleTextChange("contact", text)} value={bloodData.contact} style={{ width: "95%" }} mode='outlined' label={"Contact"} />
                 <TextInput onChangeText={text => handleTextChange("hemoglobin", text)} value={bloodData.hemoglobin} style={{ width: "95%" }} mode='outlined' label={"Himoglobin"} />
@@ -117,9 +149,10 @@ function CreateBlood(props) {
             </View>
             <View style={{ width: "95%", margin: "auto", display: "flex", justifyContent: "space-between", flexDirection: "row", marginTop: 10 }}>
                 <Button onPress={handleCencel} style={{ width: "49%", borderRadius: 10 }} mode='outlined'>Cencel</Button>
-                <Button disabled={disableSaveButton?true:false} onPress={handleSave} style={{ width: "49%", borderRadius: 10 }} mode='contained'>Save</Button>
+                <Button loading={isPending} disabled={isPending} onPress={handleSave} style={{ width: "49%", borderRadius: 10 }} mode='contained'>Save</Button>
             </View>
-        </PageWrapper>
+        </ScrollView>
+        </>
     )
 }
 

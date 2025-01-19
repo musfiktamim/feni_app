@@ -9,19 +9,12 @@ function PageWrapper({ children, isYouWantToFloatButton = [false, "", ""], isYou
 
     const navigation = useNavigation();
     return (
-        <View style={{ flex: 1, position: "relative" }}>
-            <ScrollView showsVerticalScrollIndicator={false} style={{ paddingHorizontal: 5 }}>
-                <View style={{ height: 10 }}>
+        <View style={{ flex: 1, position: "relative",paddingHorizontal:3 }}>
+            
+            {children}
+            <View style={{marginTop:70}}>
 
-                </View>
-                {children}
-                {
-                    isYouWantToNavigationBar[0] ?
-                        <View style={{ height: 90 }}>
-
-                        </View> : null
-                }
-            </ScrollView>
+            </View>
             {
                 isYouWantToFloatButton[0] &&
                 <IconButton icon={`${isYouWantToFloatButton[2]}`} onPress={() => navigation.navigate(isYouWantToFloatButton[1])} style={{ backgroundColor: "white", elevation: 100, borderColor: "black", borderWidth: 1, position: "absolute", bottom: "9%", right: "2%" }} size={35} ></IconButton>

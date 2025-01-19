@@ -47,7 +47,9 @@ function CreateTourism(props) {
 
 
         if (!result.canceled) {
-            // setTourismData((prev) =>( {...prev ,image : prev.image ? [...[result.assets.map((item)=>item.base64)], ...prev] : [...result.assets.map((item)=>item.base64)]}));
+            const newImages = result?.assets.map((asets)=>asets.base64).flat()
+            // setTourismData((prev) =>( {...prev ,image: [ prev.image ? [...newImages, ...prev] : [...newImages]]}));
+            setTourismData((prev)=>({...prev,image: prev.image.length!=0?[...newImages,...prev.image]:[...newImages]}))
         }
     };
 

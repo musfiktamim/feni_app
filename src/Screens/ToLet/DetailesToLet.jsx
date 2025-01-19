@@ -3,10 +3,15 @@ import { Alert, Image, Linking, ScrollView, Text, View } from 'react-native'
 import PageWrapper from "../../components/PageWrapper"
 import image1 from "../../../assets/images/bijoysinghIMages.jpg"
 import { Button, IconButton } from 'react-native-paper'
+import ProgressBarForTop from '../../components/ProgressBarForTop'
 
 function DetailesToLet() {
     return (
-        <PageWrapper>
+        <>
+        {
+            <ProgressBarForTop isLoad={true} />
+        }
+        <ScrollView showsVerticalScrollIndicator={false} style={{paddingHorizontal:5}}>
             <View style={{ width: "100%", height: "auto" }}>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ flex: 1, display: "flex", paddingVertical: 6 }}>
                     {
@@ -48,7 +53,8 @@ function DetailesToLet() {
                 <Button mode='contained' style={{ width: "80%", borderRadius: 10 }}>01855241666</Button>
                 <IconButton onPress={() => Alert.alert("কল করতে চান?", "আপনি কি নিশ্চিত আপনি বাড়ির মালিককে কল করতে চান?", [{ text: "হ্যাঁ", onPress: () => { Linking.openURL("tel:01855241666") } }, { text: "না" }, { text: 'সরান' }])} icon={"phone"} mode='contained' style={{ width: "15%", borderRadius: 10 }} />
             </View>
-        </PageWrapper >
+        </ScrollView>
+        </>
     )
 }
 

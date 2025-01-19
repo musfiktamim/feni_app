@@ -42,7 +42,7 @@ export default function App() {
 
     <PaperProvider>
       <NavigationContainer  >
-        <Stack.Navigator screenOptions={{ animation: "flip" }} initialRouteName='Home' >
+        <Stack.Navigator screenOptions={{ animation: "ios_from_right"}} initialRouteName='Home' >
           <Stack.Screen name='Home' options={{ title: "ফেনী জেলা" }} component={Home} />
           <Stack.Screen name='Notification' component={About} />
           <Stack.Screen name='Activity' component={MyAllDocuMents} />
