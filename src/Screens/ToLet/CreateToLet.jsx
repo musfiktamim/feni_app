@@ -86,10 +86,11 @@ function CreateToLet(props) {
 
     const [extraBenifit,setExtraBenifit] = useState("")
 
-    const {mutate} = useMutation({
+    const {mutate,isPending} = useMutation({
         mutationFn:(data)=>createToLet(data),
         onSuccess:(res)=>{
             ToastAndroid.show(res.message,300)
+            handleCencel()
         },
         onError:(err)=>{
             ToastAndroid.show(err.message,300)
@@ -111,7 +112,7 @@ function CreateToLet(props) {
     return (
         < >
             {
-                // <ProgressBarForTop isLoad={true} />
+                <ProgressBarForTop isLoad={isPending} />
             }
             <ScrollView showsVerticalScrollIndicator={false}>
 
@@ -172,8 +173,7 @@ function CreateToLet(props) {
                                 setToletData((prev)=>({...prev,extraBenifits:filtered}))
                             }} style={{display:"flex",flexDirection:"row",alignItems:"center",justifyContent:"space-between"}}>
                                 <View style={{display:"flex",flexDirection:"row",alignItems:"center",width:"90%"}}>
-                                    <Text style={{fontSize:25}}>{'\u2022'}</Text>
-                                    <Text style={{fontSize:17,paddingLeft:5,overflow:"hidden"}}>{item}</Text>
+                                    <Icon source={'disc'} />  <Text style={{fontSize:17,paddingLeft:5,overflow:"hidden"}}>{item}</Text>
                                 </View>
                                 <IconButton onPress={()=>{
                                     const filtered = toletData.extraBenifits.filter((ins)=>ins!=item)
@@ -223,7 +223,7 @@ function CreateToLet(props) {
                         }
                     </View>
                     <View style={{ width: "95%", margin: "auto" }}>
-                        <Button onPress={handleSave} style={{ width: "100%", borderRadius: 10, marginTop: 5 }} mode='contained'>সেভ করুন</Button>
+                        <Button loading={isPending} disabled={isPending} onPress={handleSave} style={{ width: "100%", borderRadius: 10, marginTop: 5 }} mode='contained'>সেভ করুন</Button>
                         <Button onPress={handleCencel} style={{ width: "100%", borderRadius: 10, marginTop: 5 }} mode='outlined'>বাতিল করুন</Button>
                     </View>
                 </View>

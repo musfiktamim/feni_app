@@ -6,10 +6,10 @@ import { useNavigation } from '@react-navigation/native'
 function TourismBox({ naviationLiks, navigationId, isBlood = false, isCar, item }) {
     const navigation = useNavigation()
     return (
-        <Pressable onPress={() => !isBlood ? !isCar ? navigation.navigate(naviationLiks, { links: "musfik" }):null : null} onLongPress={() => Linking.openURL('tel:01855231666')}>
+        <Pressable onPress={() => !isBlood ? !isCar ? navigation.navigate(naviationLiks, { item : item}):null : null} onLongPress={() => Linking.openURL('tel:01855231666')}>
             <View style={{ width: "100%",marginTop:10, height: 150, display: "flex", flexDirection: "row", justifyContent: "flex-end", position: "relative", alignItems: "center" }}>
                 <View style={{ width: "85%", height: "100%", elevation: 6, display: "flex", justifyContent: "center", paddingLeft: "17%", backgroundColor: "white", borderRadius: 5 }}>
-                    <Text style={{ fontSize: 20 }}>{isBlood ? item.donner_name : isCar? item && item.name && item.name : "Bijoy singh dighi"}</Text>
+                    <Text style={{ fontSize: 20 }}>{isBlood ? item.donner_name : isCar? item && item.name && item.name : item.name}</Text>
                     {
                         isBlood ? <View style={{ width: "100%" }}>
                             <Text>
@@ -72,7 +72,10 @@ function TourismBox({ naviationLiks, navigationId, isBlood = false, isCar, item 
                 </View>
                 <View style={{ width: "30%", elevation: 5, position: "absolute", height: "90%", backgroundColor: "white", left: 0, borderRadius: "20%", overflow: "hidden" }}>
                     {
-                     item && item.picture && <Image source={{ uri: item.picture.url && item.picture.url }} style={{ width: "100%", height: "100%", }} />
+                      isBlood || isCar || item && item.picture && <Image source={{ uri: item.picture.url && item.picture.url }} style={{ width: "100%", height: "100%", }} />
+                    }
+                    {
+                        item.pictures && <Image source={{ uri: item.pictures && item.pictures[0].url }} style={{ width: "100%", height: "100%", }} />
                     }
                 </View>
             </View>

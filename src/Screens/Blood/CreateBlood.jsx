@@ -72,23 +72,11 @@ function CreateBlood(props) {
         mutationFn:(data)=>createBlood(data),
         onSuccess:(res)=>{
             if(res.mission){
-                ToastAndroid.show(res.message)
-                setBloodData({
-                    image: "",
-                    donner_name: "",
-                    contact: "",
-                    date_of_birth: "",
-                    height: "",
-                    Weight: "",
-                    blood_group: "A+",
-                    hemoglobin: "",
-                    last: "",
-                    doned: "",
-                    description: "",
-                    remark: "",
-                })
+                ToastAndroid.show(res.message,1000)
+                handleCencel()
+                
             }else{
-                ToastAndroid.show("wrong",res.message)
+                ToastAndroid.show(res.message,1000)
             }
         },
         onError:(error)=>{

@@ -12,7 +12,7 @@ function PageWrapper({ children, isYouWantToFloatButton = [false, "", ""], isYou
         <View style={{ flex: 1, position: "relative",paddingHorizontal:3 }}>
             
             {children}
-            <View style={{marginTop:70}}>
+            <View style={{marginTop:isYouWantToFloatButton[0]?70:false}}>
 
             </View>
             {

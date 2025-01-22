@@ -3,48 +3,44 @@ import { Alert, Image, Linking, Pressable, StyleSheet, Text, View } from 'react-
 import image1 from '../../assets/images/bijoysinghIMages.jpg'
 import { useNavigation } from '@react-navigation/native'
 
-function ToletBox() {
+function ToletBox({item}) {
     const navigation = useNavigation()
     function handleLongPress() {
         Alert.alert("নিশ্চিত?", "আপনি কি নিশ্চিত? আপনি তাকে কল করতে চান।", [{ text: "হ্যা", onPress: () => { Linking.openURL("tel:01855241666") } }, { text: "না", onPress: () => { } }, { text: "সরান", onPress: () => { } }])
     }
     return (
-        <Pressable onPress={() => navigation.navigate("To Let Detailes")} onLongPress={handleLongPress} style={styles.Container} >
+        <Pressable onPress={() => navigation.navigate("To Let Detailes",{item:item})} onLongPress={handleLongPress} style={styles.Container} >
             <View style={styles.imageContainer}>
-                <Image source={image1} style={{ width: "100%", height: "100%" }} />
+                <Image source={{uri:item.picture[0].url}} style={{ width: "100%", height: "100%" }} />
             </View>
             <View style={styles.detailesContainer}>
                 <View>
-                    <Text style={{ fontSize: 18, maxHeight: 46, ...styles.mainContentTextStyle }}>Bijoy Singh Dighi Bijoy Bijoy Singh Dighi Bijoy Singh Singh Bijoy Singh Dighi Bijoy Singh</Text>
+                    <Text style={{ fontSize: 18, maxHeight: 46, ...styles.mainContentTextStyle }}>{item.name}</Text>
                 </View>
+
+                <View>
+                    <Text style={{ fontSize: 14, maxHeight: 46, ...styles.mainContentTextStyle,color:"gray" }}>{item.home_location}</Text>
+                </View>
+                
                 <View style={{ maxHeight: "auto" }}>
                     <Text style={{ fontSize: 14, flexDirection: "row", flexWrap: "wrap" }}>
                         <Text>
                             <Text style={styles.contentDetailesTextStyle}>
                                 Rome:
                             </Text>
-                            <Text style={styles.mainContentTextStyle}> 4</Text>
+                            <Text style={styles.mainContentTextStyle}>{item.room}</Text>
                         </Text>
+
                         <Text>
-                            <Text style={styles.contentDetailesTextStyle}>  Toylet:</Text>
-                            <Text style={styles.mainContentTextStyle}> 1</Text>
+                            <Text style={styles.contentDetailesTextStyle}>  width:</Text>
+                            <Text style={styles.mainContentTextStyle}>{item.room_width}</Text>
                         </Text>
+
                         <Text>
-                            <Text style={styles.contentDetailesTextStyle}>  Kitchen:</Text>
-                            <Text style={styles.mainContentTextStyle}> 1</Text>
+                            <Text style={styles.contentDetailesTextStyle}>  height:</Text>
+                            <Text style={styles.mainContentTextStyle}>{item.room_height}</Text>
                         </Text>
-                        <Text>
-                            <Text style={styles.contentDetailesTextStyle}>Toylet:</Text>
-                            <Text style={styles.mainContentTextStyle}> 1</Text>
-                        </Text>
-                        <Text>
-                            <Text style={styles.contentDetailesTextStyle}>  Kitchen:</Text>
-                            <Text style={styles.mainContentTextStyle}> 1</Text>
-                        </Text>
-                        <Text>
-                            <Text style={styles.contentDetailesTextStyle}>  coridor:</Text>
-                            <Text style={styles.mainContentTextStyle}> 2</Text>
-                        </Text>
+                        
                     </Text>
                 </View>
                 <View>
@@ -53,12 +49,25 @@ function ToletBox() {
                         <Text style={styles.mainContentTextStyle}>01855241666</Text>
                     </Text>
                 </View>
-                <View>
-                    <Text style={{ fontSize: 15 }}>
-                        <Text style={styles.contentDetailesTextStyle}>Monthly: </Text>
-                        <Text style={styles.mainContentTextStyle}>1200</Text>
-                    </Text>
-                </View>
+                {
+                    item.price &&
+                    <View>
+                        {
+                            item.price.daily &&
+                            <Text style={{ fontSize: 15 }}>
+                                <Text style={styles.contentDetailesTextStyle}>Daily: </Text>
+                                <Text style={styles.mainContentTextStyle}>{item?.price?.daily} Tk</Text>
+                            </Text>
+                        }
+                        {
+                            item.price.monthly &&
+                            <Text style={{ fontSize: 15 }}>
+                                <Text style={styles.contentDetailesTextStyle}>Monthly: </Text>
+                                <Text style={styles.mainContentTextStyle}>{item?.price?.monthly} Tk</Text>
+                            </Text>
+                        }
+                    </View>
+                }
             </View>
         </Pressable>
     )

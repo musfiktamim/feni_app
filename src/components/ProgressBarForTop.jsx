@@ -4,6 +4,7 @@ import { MD3Colors, ProgressBar } from 'react-native-paper'
 
 function ProgressBarForTop({isLoad=false}) {
   return (
+    isLoad &&
     <>
         <ProgressBar indeterminate={isLoad} color={MD3Colors.error50}/>
     </>

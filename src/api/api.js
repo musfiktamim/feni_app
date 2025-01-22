@@ -1,11 +1,12 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import { Alert } from "react-native";
+import { Alert, ToastAndroid } from "react-native";
 
 const api =  axios.create({
     baseURL:"http://192.168.10.195:9000"
 })
 
+// create
 
 export async function createDoctor(data) {
     try{
@@ -66,7 +67,38 @@ export async function createRentCar(data){
     }
 }
 
+export async function createTourism(data){
+    try{
+        const res = await api.post('/create-tourism',data,{headers:{Authorization:await AsyncStorage.getItem("token")}})
+        if(res.status == 200 && res.data.mission) return res.data.message
+        ToastAndroid.show(res.data.message,1000)
+    }catch(err){
+        throw new Error(err.message)
+    }
+} 
 
+export async function createWorker(data){
+    try{
+        const res = await api.post('/create-worker',data,{headers:{Authorization:await AsyncStorage.getItem("token")}})
+        if(res.status == 200) return res.data
+
+    }catch(err){
+        throw new Error(err.message)
+    }
+} 
+
+
+export async function createNews(data) {
+    try{
+        const res = await api.post('/create-news',data,{headers:{Authorization:await AsyncStorage.getItem("token")}})
+        if(res.status == 200) return res.data
+
+    }catch(err){
+        throw new Error(err.message)
+    }
+}
+
+// get
 
 export async function getDoctorChunk(doctorTypes=`All`,pageParams=0) {
     try {
@@ -98,6 +130,42 @@ export async function getRentCar(acNonAc=`All`,pageParams=0){
     }catch(err){
         return []
     }
+}
+
+export async function getTolate(pageParams=0){
+    try{
+       const res = await api.get(`/get-tolet/?page=${pageParams}`) 
+       if(res.status == 200 && res.data.mission) return res.data.data
+       ToastAndroid.show(res.data.message)
+       return []
+    }catch(err){
+        ToastAndroid.show(err.message,1000)
+        return[]
+    }
+}
+
+export async function getTourism(pageParams=0){
+    try{
+       const res = await api.get(`/get-tourism/?page=${pageParams}`) 
+       if(res.status == 200 && res.data.mission) return res.data.data
+       ToastAndroid.show(res.data.message)
+       return []
+    }catch(err){
+        ToastAndroid.show(err.message,1000)
+        return[]
+    }
+}
+
+export async function getWorker(pageParams=0){
+    try{
+        const res = await api.get(`/get-worker/?page=${pageParams}`) 
+        if(res.status == 200 && res.data.mission) return res.data.data
+        ToastAndroid.show(res.data.message)
+        return []
+     }catch(err){
+         ToastAndroid.show(err.message,1000)
+         return[]
+     }
 }
 
 

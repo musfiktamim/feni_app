@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Alert, Image, Pressable, ScrollView, Text, ToastAndroid, View } from 'react-native'
+import { Alert, FlatList, Image, Pressable, ScrollView, Text, ToastAndroid, TouchableOpacity, View } from 'react-native'
 import { Button, Icon, IconButton, MD3Colors, Modal, Portal, ProgressBar, RadioButton, TextInput } from 'react-native-paper'
 import * as ImagePicker from "expo-image-picker"
 import { Picker } from '@react-native-picker/picker';
@@ -117,17 +117,7 @@ function CreateDoctor(props) {
             if(res.mission){
                 Alert.alert("doctor posted", res.message, [{
                     text: "OK!", onPress: () => {
-                        setDoctorData({
-                            name: "",
-                            educations: [],
-                            presentworkplace: "",
-                            chembers: [],
-                            description: "",
-                            contact: "",
-                            doctorType: "মেডিসিন বিশেষজ্ঞ",
-                            gender: "male",
-                            image: ""
-                        });
+                        handleCencel()
                     }
                 },
                  { text: "Go Home", onPress: () => 
@@ -183,7 +173,7 @@ function CreateDoctor(props) {
                 isPending &&
                     <ProgressBarForTop isLoad={true} />
             }        
-        <PageWrapper >
+        <ScrollView showsVerticalScrollIndicator={false} style={{paddingHorizontal:5}}>
             <View style={{ margin: "auto", position: "relative", marginBottom: 10 }}>
                 <View style={{ width: 200, height: 200, borderWidth: 1, overflow: 'hidden', borderColor: "black", borderRadius: "100%" }}>
                     {
@@ -192,8 +182,6 @@ function CreateDoctor(props) {
                 </View>
                 <IconButton style={{ position: "absolute", bottom: 0, right: 0, backgroundColor: "pink" }} iconColor='white' size={40} icon={"camera"} onPress={pickImage}></IconButton>
             </View>
-            <ScrollView showsVerticalScrollIndicator={false}>
-
             <TextInput value={doctorData.name} onChangeText={text => handletextChange("name", text)} key={'name'} mode='outlined' label={"ডাক্টারের নাম"} cursorColor='black' />
             <View style={{ width: "100%", borderWidth: 0.2, borderColor: "gray", marginVertical: 10 }}>
 
@@ -256,8 +244,8 @@ function CreateDoctor(props) {
                 <Button onPress={handleCencel} mode='outlined' style={{ width: "49%", borderRadius: 10 }} >বাতিল করুন </Button>
                 <Button disabled={isPending} onPress={handleSave} mode='contained' style={{ width: "49%", borderRadius: 10 }} >পোষ্ট করুন</Button>
             </View>
-            </ScrollView>
-        </PageWrapper>
+        
+        </ScrollView>
         </>
     )
 }
@@ -292,9 +280,10 @@ function ShowChemberBox({ setData, data, item }) {
 
 
 function ChemberBox({ returnData, setOpenChemberMode }) {
+    const days = ['Sat','Sun','Mon','Tue','Wed','Thu','Fri']
     const [chemberData, setChemberData] = useState({
         chemberName: "",
-        chemberDay: "",
+        chemberDay: [],
         startToEnd: "",
         phone: "",
         remark: ""
@@ -304,20 +293,53 @@ function ChemberBox({ returnData, setOpenChemberMode }) {
         setChemberData((prev) => ({ ...prev, [fieldName]: text }))
     }
 
+    function handleChemberDay(data){
+        // const h = []
+        // console.log(data)
+        const findIndex = chemberData.chemberDay.findIndex((item)=>item==data)
+        if(findIndex<0){
+            setChemberData((prev)=>({
+                ...prev,
+                chemberDay:[...prev.chemberDay,data]
+            }))
+        }else{
+            const filtered = chemberData.chemberDay.filter((item)=>item!=data)
+            setChemberData((prev)=>({
+                ...prev,
+                chemberDay:filtered
+            }))
+        }
+        // console.log(findIndex)
+        
+    }
+
     return (
         <View style={{ paddingHorizontal: 10, paddingVertical: 10 }}>
             <TextInput value={chemberData.chemberName} onChangeText={text => handletextChange("chemberName", text)} inputMode='text' mode='outlined' label={'চেম্বারের নাম'}></TextInput>
-            <TextInput value={chemberData.chemberDay} onChangeText={text => handletextChange("chemberDay", text)} inputMode='text' mode='outlined' label={'কি কি বারে'}></TextInput>
+            <View style={{height:"50",width:"100%"}}>
+                <FlatList 
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                data={days}
+                renderItem={({item})=>{
+                const findindex = chemberData.chemberDay.findIndex((items)=>items==item)
+                return <TouchableOpacity onPress={()=>handleChemberDay(item)} style={{height:"80%",paddingHorizontal:10,display:"flex",flexDirection:"row",alignItems:"center",justifyContent:"center",borderWidth:0.5,marginTop:5,marginLeft:5,borderRadius:5,backgroundColor:findindex>=0?"black":"white"}} key={item}>
+                    <Text style={{fontSize:20,color:findindex>=0?"white":"black"}}>
+                        {item}
+                    </Text>
+                </TouchableOpacity>}}
+                />
+            </View>
             <TextInput value={chemberData.startToEnd} onChangeText={text => handletextChange("startToEnd", text)} inputMode='text' mode='outlined' label={'কয়টা থেকে কয়টা'}></TextInput>
             <TextInput value={chemberData.phone} onChangeText={text => handletextChange("phone", text)} inputMode='text' mode='outlined' label={'ফোন নাম্বার'}></TextInput>
             <TextInput value={chemberData.remark} onChangeText={text => handletextChange("remark", text)} inputMode='text' mode='outlined' label={'note'}></TextInput>
             <View style={{ display: "flex", marginTop: 10, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                 <Button mode='outlined' onPress={() => {
                     setOpenChemberMode(false)
-                    setChemberData({ chemberName: "", chemberDay: "", startToEnd: "", phone: "", remark: "" })
+                    setChemberData({ chemberName: "", chemberDay: [], startToEnd: "", phone: "", remark: "" })
                 }} style={{ width: "49%", borderRadius: 10 }}>বাতিল করুন</Button>
                 <Button onPress={() => {
-                    if (chemberData.chemberName && chemberData.chemberDay && chemberData.startToEnd && chemberData.phone) {
+                    if (chemberData.chemberName && chemberData.chemberDay.length > 0 && chemberData.startToEnd && chemberData.phone) {
                         returnData("chembers", chemberData)
                         setOpenChemberMode(false)
                     } else {

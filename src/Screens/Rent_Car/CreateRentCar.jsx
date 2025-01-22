@@ -37,24 +37,8 @@ function CreateRentCar(props) {
         mutationKey:['create-car'],
         mutationFn:(data)=>createRentCar(data),
         onSuccess:(data)=>{
-            Alert.alert("success",data.message,[{text:"OK!",onPress:()=>setInData({
-                image:'',
-                name:"",
-                contact:"",
-                carCode:"",
-                nidNo:"",
-                sits:"",
-                IsAc:"Non AC"
-            })}])
-            setInData({
-                image:'',
-                name:"",
-                contact:"",
-                carCode:"",
-                nidNo:"",
-                sits:"",
-                IsAc:"Non AC"
-            })
+            Alert.alert("success",data.message,[{text:"OK!",onPress:()=>handleCencel()}])
+            handleCencel()
         },onError:(error)=>{
             Alert.alert("error",error.message)
             // console.log(error.message)
