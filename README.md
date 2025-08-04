@@ -1,5 +1,3 @@
-Here’s a simpler, clean, and interactive **GitHub README** with just 3 collapsible sections and easy copy-paste code blocks — minimal clutter and user-friendly:
-
 ````markdown
 # 🚀 NestJS + Prisma + PostgreSQL — Minimal Starter
 
@@ -7,23 +5,25 @@ A minimal setup for using **NestJS** with **Prisma ORM** and **PostgreSQL**.
 
 ---
 
-<details>
-<summary><strong>⚙️ Setup & Installation</strong></summary>
+## Setup & Usage
+
+### 1. Clone & install dependencies
 
 ```bash
-# Clone & install
 git clone https://github.com/your-username/nestjs-prisma-starter.git
 cd nestjs-prisma-starter
 npm install
 ````
 
-Create `.env` file:
+### 2. Create `.env` file
+
+Create a `.env` file in the project root and add your PostgreSQL connection string:
 
 ```env
 DATABASE_URL="postgresql://user:password@localhost:5432/dbname"
 ```
 
-Initialize Prisma and run migration:
+### 3. Initialize Prisma and run migration
 
 ```bash
 npx prisma init
@@ -31,33 +31,19 @@ npx prisma migrate dev --name init
 npx prisma generate
 ```
 
-</details>
-
----
-
-<details>
-<summary><strong>🛠 Sample Prisma Usage</strong></summary>
-
-Create a user:
+### 4. Sample Prisma usage in your NestJS service
 
 ```typescript
+// Create a user
 this.prisma.user.create({
   data: { name: 'Alice', email: 'alice@example.com' },
 });
-```
 
-Fetch all users:
-
-```typescript
+// Fetch all users
 this.prisma.user.findMany();
 ```
 
-</details>
-
----
-
-<details>
-<summary><strong>✅ PrismaService Code</strong></summary>
+### 5. PrismaService implementation
 
 ```typescript
 import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
@@ -75,11 +61,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
 }
 ```
 
-</details>
-
----
-
-## 🧪 Run the app
+### 6. Run the app
 
 ```bash
 npm run start:dev
@@ -87,14 +69,16 @@ npm run start:dev
 
 ---
 
-## 📚 Helpful Links
+## Helpful Links
 
-* [NestJS Docs](https://nestjs.com/docs)
-* [Prisma Docs](https://www.prisma.io/docs/)
+* [NestJS Documentation](https://nestjs.com/docs)
+* [Prisma Documentation](https://www.prisma.io/docs/)
 
 ```
 
 ---
 
-Would you like me to package this as a `.md` file you can directly upload?
+This way, everything is visible in one scrollable section for easy copy/paste or reading on GitHub.
+
+If you want, I can create the actual `.md` file for you to download.
 ```
