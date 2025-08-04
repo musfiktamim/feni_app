@@ -1,55 +1,32 @@
-Got it! Here’s a clean, interactive **one-page GitHub README** with **copyable code blocks** using collapsible sections and inline code formatting, so users can easily expand and copy everything in one place:
+Here’s a simpler, clean, and interactive **GitHub README** with just 3 collapsible sections and easy copy-paste code blocks — minimal clutter and user-friendly:
 
 ````markdown
 # 🚀 NestJS + Prisma + PostgreSQL — Minimal Starter
 
-A minimal, clean setup of **NestJS** using **Prisma ORM** with **PostgreSQL**.
-
----
-
-## 📦 Tech Stack
-- NestJS
-- Prisma ORM
-- PostgreSQL
-- TypeScript
+A minimal setup for using **NestJS** with **Prisma ORM** and **PostgreSQL**.
 
 ---
 
 <details>
-<summary><strong>⚙️ Installation & Setup</strong></summary>
+<summary><strong>⚙️ Setup & Installation</strong></summary>
 
 ```bash
-# Clone repo & install dependencies
+# Clone & install
 git clone https://github.com/your-username/nestjs-prisma-starter.git
 cd nestjs-prisma-starter
 npm install
 ````
 
-Create `.env` in root:
+Create `.env` file:
 
 ```env
 DATABASE_URL="postgresql://user:password@localhost:5432/dbname"
 ```
 
-Initialize Prisma:
+Initialize Prisma and run migration:
 
 ```bash
 npx prisma init
-```
-
-Define schema in `prisma/schema.prisma`:
-
-```prisma
-model User {
-  id    Int     @id @default(autoincrement())
-  name  String
-  email String  @unique
-}
-```
-
-Run migration & generate client:
-
-```bash
 npx prisma migrate dev --name init
 npx prisma generate
 ```
@@ -59,26 +36,9 @@ npx prisma generate
 ---
 
 <details>
-<summary><strong>🧩 Folder Structure</strong></summary>
+<summary><strong>🛠 Sample Prisma Usage</strong></summary>
 
-```
-src/
-  ├── prisma/
-  │   ├── prisma.module.ts
-  │   └── prisma.service.ts
-  └── user/
-      ├── user.module.ts
-      └── user.service.ts
-```
-
-</details>
-
----
-
-<details>
-<summary><strong>🛠 Sample Usage</strong></summary>
-
-Create user:
+Create a user:
 
 ```typescript
 this.prisma.user.create({
@@ -97,16 +57,14 @@ this.prisma.user.findMany();
 ---
 
 <details>
-<summary><strong>✅ Prisma Service Implementation</strong></summary>
+<summary><strong>✅ PrismaService Code</strong></summary>
 
 ```typescript
 import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 
 @Injectable()
-export class PrismaService extends PrismaClient
-  implements OnModuleInit, OnModuleDestroy {
-  
+export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
   async onModuleInit() {
     await this.$connect();
   }
@@ -121,7 +79,7 @@ export class PrismaService extends PrismaClient
 
 ---
 
-## 🧪 Run the Application
+## 🧪 Run the app
 
 ```bash
 npm run start:dev
@@ -129,20 +87,14 @@ npm run start:dev
 
 ---
 
-## 📚 Resources
+## 📚 Helpful Links
 
-* [NestJS Documentation](https://nestjs.com/docs)
-* [Prisma Documentation](https://www.prisma.io/docs/)
+* [NestJS Docs](https://nestjs.com/docs)
+* [Prisma Docs](https://www.prisma.io/docs/)
 
 ```
 
 ---
 
-This format:
-
-- Keeps the README tidy with collapsible sections
-- Puts all code in single blocks so users can easily copy entire sections
-- Is fully Markdown compliant and renders nicely on GitHub
-
-If you want, I can also generate a ready-to-use `.md` file for you.
+Would you like me to package this as a `.md` file you can directly upload?
 ```
