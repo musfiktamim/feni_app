@@ -1,84 +1,100 @@
-````markdown
-# 🚀 NestJS + Prisma + PostgreSQL — Minimal Starter
+---
 
-A minimal setup for using **NestJS** with **Prisma ORM** and **PostgreSQL**.
+````markdown
+# Feni App
+
+A brief description of your project here.
 
 ---
 
-## Setup & Usage
-
-### 1. Clone & install dependencies
+<details>
+<summary><strong>🚀 Installation</strong></summary>
 
 ```bash
-git clone https://github.com/your-username/nestjs-prisma-starter.git
-cd nestjs-prisma-starter
+# Clone the repo
+git clone https://github.com/musfiktamim/feni_app.git
+cd feni_app
+
+# Install dependencies
 npm install
 ````
 
-### 2. Create `.env` file
+</details>
 
-Create a `.env` file in the project root and add your PostgreSQL connection string:
+---
+
+<details>
+<summary><strong>⚙️ Setup & Configuration</strong></summary>
+
+Create a `.env` file in the root and configure your environment variables:
 
 ```env
-DATABASE_URL="postgresql://user:password@localhost:5432/dbname"
+DATABASE_URL="your_database_connection_string_here"
 ```
 
-### 3. Initialize Prisma and run migration
+Run migrations and generate Prisma client (if using Prisma):
 
 ```bash
-npx prisma init
 npx prisma migrate dev --name init
 npx prisma generate
 ```
 
-### 4. Sample Prisma usage in your NestJS service
+</details>
 
-```typescript
-// Create a user
-this.prisma.user.create({
-  data: { name: 'Alice', email: 'alice@example.com' },
-});
+---
 
-// Fetch all users
-this.prisma.user.findMany();
-```
+<details>
+<summary><strong>🧑‍💻 Usage</strong></summary>
 
-### 5. PrismaService implementation
-
-```typescript
-import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
-
-@Injectable()
-export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
-  async onModuleInit() {
-    await this.$connect();
-  }
-
-  async onModuleDestroy() {
-    await this.$disconnect();
-  }
-}
-```
-
-### 6. Run the app
+Start the development server:
 
 ```bash
 npm run start:dev
 ```
 
----
+Or build and start production:
 
-## Helpful Links
-
-* [NestJS Documentation](https://nestjs.com/docs)
-* [Prisma Documentation](https://www.prisma.io/docs/)
-
+```bash
+npm run build
+npm run start:prod
 ```
 
+</details>
+
 ---
 
-This way, everything is visible in one scrollable section for easy copy/paste or reading on GitHub.
+<details>
+<summary><strong>📂 Folder Structure</strong></summary>
 
-If you want, I can create the actual `.md` file for you to download.
 ```
+src/
+ ├── prisma/
+ ├── modules/
+ ├── main.ts
+ └── ...
+```
+
+</details>
+
+---
+
+<details>
+<summary><strong>💡 Features</strong></summary>
+
+* Feature 1 description
+* Feature 2 description
+* Feature 3 description
+
+</details>
+
+---
+
+## 📚 Resources
+
+* [NestJS Docs](https://nestjs.com/docs)
+* [Prisma Docs](https://www.prisma.io/docs/)
+* Add other relevant links here
+
+---
+
+If you want, I can help you add specific sections or polish any part further! Would you like me to generate the updated README file text for you to copy/paste?
